@@ -7,11 +7,14 @@
     "sourceMap": false,
     "strict": true,
     "useUnknownInCatchVariables": false,
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
     "types": [
       "node",
       "jest"
     ]
   },
   "include": ["actions", "bin", "commands", "lib"],
-  "exclude": ["node_modules", "e2e"]
+  "exclude": ["node_modules", "e2e", "test", "dist", "**/*spec.ts"]
 }

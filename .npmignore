@@ -10,6 +10,7 @@ node_modules/
 CONTRIBUTE.md
 
 # source
+src
 **/*.ts
 *.ts
 /test

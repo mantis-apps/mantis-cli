@@ -19,7 +19,7 @@ aliases:
 
 jobs:
   build:
-    working_directory: ~/nest
+    working_directory: ~/mantis-cli
     docker:
       - image: cimg/node:21.1
     steps:
@@ -41,7 +41,7 @@ jobs:
           command: npm run build
 
   unit_tests:
-    working_directory: ~/nest
+    working_directory: ~/mantis-cli
     docker:
       - image: cimg/node:21.1
     steps:
