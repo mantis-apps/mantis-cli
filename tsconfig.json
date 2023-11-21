@@ -15,6 +15,6 @@
       "jest"
     ]
   },
-  "include": ["actions", "bin", "commands", "lib"],
+  "include": ["src"],
   "exclude": ["node_modules", "e2e", "test", "dist", "**/*spec.ts"]
 }

@@ -1,0 +1,40 @@
+{
+  "name": "mantis-cli",
+  "version": "0.1.0",
+  "description": "M.A.N.T.I.S (MongoDB, Angular, NestJS, Tailwind CSS, Ionic, Storybook) is not just a CLI tool; it's your passport to a seamless full-stack project launch.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">= 18"
+  },
+  "bin": {
+    "nest": "src/mantis.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/futurizeworld/mantis-cli.git"
+  },
+  "keywords": [
+    "MongoDB",
+    "Angular",
+    "NestJS",
+    "Tailwind",
+    "CSS",
+    "Ionic",
+    "Storybook"
+  ],
+  "author": "FuturizeWorld",
+  "license": "SEE LICENSE IN <LICENSE> FILE",
+  "bugs": {
+    "url": "https://github.com/futurizeworld/mantis-cli/issues"
+  },
+  "homepage": "https://github.com/futurizeworld/mantis-cli#readme",
+  "devDependencies": {
+    "@types/node": "^20.9.3",
+    "typescript": "^5.3.2"
+  }
+}
