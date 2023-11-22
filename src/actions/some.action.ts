@@ -4,5 +4,5 @@ export const someAction = async () => {
     // Logic for the action
     const matarLogger = new OrbitLogger('DSN');
 
-    // matarLogger.
+    matarLogger.info('Hello World !')
 };

@@ -1,58 +1,40 @@
 import Logger, { LoggerOptions } from '@ptkdev/logger';
 
-// Define a general type for logger methods.
-type LoggerMethod = (...args: any[]) => void;
-
-// Logger interface with dynamic key access to methods.
-interface LoggerWithTags {
-  [key: string]: LoggerMethod;
-}
-
-// Mapping of method names to their 'tag' parameter positions.
-interface TagPositionMap {
-  [methodName: string]: number;
-}
-
 export class OrbitLogger {
-  private logger: LoggerWithTags;
-  private context: string;
+    private logger: Logger;
+    private context: string;
 
-  // Map specifying the position of the 'tag' parameter in logger methods.
-  private tagPositionMap: TagPositionMap = {
-    info: 1,
-    error: 1,
-    warning: 1,
-    sponsor: 1,
-    stackoverflow: 1,
-    docs: 2 // 'tag' is the third parameter for the docs method
-  };
+    constructor(context: string, options?: LoggerOptions) {
+        this.context = context;
+        this.logger = new Logger(options);
+    }
 
-  constructor(context: string, options?: LoggerOptions) {
-    this.context = context;
+    debug(message: string, tag?: string) {
+        this.logger.debug(message, tag || this.context);
+    }
 
-    // Creating a Proxy around the Logger instance.
-    this.logger = new Proxy(new Logger(options) as unknown as LoggerWithTags, {
-      get: (target, prop: string) => {
-        // Get the original function from the logger.
-        const originalFunction: LoggerMethod | undefined = target[prop];
+    info(message: string, tag?: string) {
+        this.logger.info(message, tag || this.context);
+    }
 
-        // Check if the property accessed is a function.
-        if (typeof originalFunction === 'function') {
-          // Return a new function that modifies the 'tag' parameter.
-          return (...args: any[]) => {
-            const tagPosition = this.tagPositionMap[prop];
-            // If the 'tag' position is defined, insert or modify the 'tag' parameter.
-            if (typeof tagPosition === 'number') {
-              args[tagPosition] = args[tagPosition] ? `${this.context}, ${args[tagPosition]}` : this.context;
-            }
-            // Call the original function with modified arguments.
-            return originalFunction(...args);
-          };
-        }
+    warning(message: string, tag?: string) {
+        this.logger.warning(message, tag || this.context);
+    }
 
-        // If not a function, return the property as is.
-        return originalFunction;
-      }
-    });
-  }
+    error(message: string, tag?: string) {
+        this.logger.error(message, tag || this.context);
+    }
+
+    sponsor(message: string, tag?: string) {
+        this.logger.sponsor(message, tag || this.context);
+    }
+
+    stackoverflow(message: string, error_string?: string, tag?: string) {
+        this.logger.stackoverflow(message, error_string, tag || this.context);
+    }
+
+    docs(message: string, url?: string, tag?: string) {
+        this.logger.docs(message, url, tag || this.context);
+    }
+
 }
