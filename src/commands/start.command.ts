@@ -1,6 +1,9 @@
 import { Command } from 'commander';
-import { someAction } from '../actions/some.action';
+import path from 'path';
+import { ActionFile } from 'src/actions/actionTypes';
 
-export default new Command('someCommand')
+const currentCommandName = path.basename(__filename).split('.').at(0);
+
+export default new Command(currentCommandName)
     .description('Description of someCommand')
-    .action(someAction);
+    .action((require(`../actions/${currentCommandName}.action`) as ActionFile)[`${currentCommandName}Action`]);
