@@ -1,8 +1,13 @@
 import Logger, { LoggerOptions } from '@ptkdev/logger';
+import fs, { PathLike } from 'fs';
+import path from 'path';
+import shell from 'shelljs';
 
 export class OrbitLogger {
     private logger: Logger;
     private context: string;
+    private logDir = path.join(__dirname, '../logs/');
+
     private defaultOptions: LoggerOptions = {
         language: "en",
         colors: true,
@@ -18,20 +23,26 @@ export class OrbitLogger {
             encoding: "utf8",
         },
         path: {
-            debug_log: "../logs/debug.log",
-            error_log: "../logs/errors.log",
+            debug_log: path.join(this.logDir, "debug.log"),
+            error_log: path.join(this.logDir, "errors.log"),
         },
     };
 
     constructor(context: string, options?: LoggerOptions) {
         this.context = context;
         this.logger = new Logger(options || this.defaultOptions);
+        if (!fs.existsSync(this.logDir)) {
+            fs.mkdirSync(this.logDir, { recursive: true });
+            shell.touch(this.defaultOptions?.path?.debug_log as string);
+            shell.touch(this.defaultOptions?.path?.error_log as string);
+        }
     }
 
     debug(message: string, dump?: any, tag?: string) {
-        this.logger.debug(`${message}${dump? '  [DUMP]⏬: ': ''}`, tag || this.context);
+        this.logger.debug(`${message}${dump ? '  [DUMP]⏬: ' : ''}`, tag || this.context);
         if (dump) {
-            console.table(dump);
+            this.logger.debug(JSON.stringify(dump));
+            // console.table(dump);
         }
     }
 

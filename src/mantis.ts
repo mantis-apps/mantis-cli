@@ -2,11 +2,14 @@
 import { program } from 'commander';
 import { loadCommands } from './commands/loader';
 import { OrbitLogger } from './utils/orbitLogger.helper';
+import { welcome } from './utils/welcome.helper';
 
 const bootstrap = async () => {
-  const logger = new OrbitLogger('BootStrap');
+  await welcome();
+  const logger = new OrbitLogger('[BOOTSTRAP]');
+
   
-  logger.info('Hello There Boot');
+  logger.debug('🚀 STARTED MANTIS-CLI 🚀');
 
   program
     .version(require('../package.json').version, '-v, --version', 'Output the current version.')
@@ -21,5 +24,4 @@ const bootstrap = async () => {
     program.outputHelp();
   }
 };
-
 bootstrap();
