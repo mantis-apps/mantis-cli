@@ -9,32 +9,35 @@ export class OrbitLogger {
         this.logger = new Logger(options);
     }
 
-    debug(message: string, tag?: string) {
-        this.logger.debug(message, tag || this.context);
+    debug(message: string, dump?: any, tag?: string) {
+        this.logger.debug(`${message}${dump? '  [DUMP]⏬: ': ''}`, tag || this.context);
+        if (dump) {
+            console.table(dump);
+        }
     }
 
     info(message: string, tag?: string) {
-        this.logger.info(message, tag || this.context);
+        return this.logger.info(message, tag || this.context);
     }
 
     warning(message: string, tag?: string) {
-        this.logger.warning(message, tag || this.context);
+        return this.logger.warning(message, tag || this.context);
     }
 
     error(message: string, tag?: string) {
-        this.logger.error(message, tag || this.context);
+        return this.logger.error(message, tag || this.context);
     }
 
     sponsor(message: string, tag?: string) {
-        this.logger.sponsor(message, tag || this.context);
+        return this.logger.sponsor(message, tag || this.context);
     }
 
     stackoverflow(message: string, error_string?: string, tag?: string) {
-        this.logger.stackoverflow(message, error_string, tag || this.context);
+        return this.logger.stackoverflow(message, error_string, tag || this.context);
     }
 
     docs(message: string, url?: string, tag?: string) {
-        this.logger.docs(message, url, tag || this.context);
+        return this.logger.docs(message, url, tag || this.context);
     }
 
 }

@@ -15,6 +15,14 @@
       "jest"
     ]
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "e2e", "test", "dist", "**/*spec.ts"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "e2e",
+    "test",
+    "dist",
+    "**/*spec.ts"
+  ]
 }
