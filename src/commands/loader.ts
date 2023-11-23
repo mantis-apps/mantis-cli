@@ -6,6 +6,7 @@ import { getScriptFileExtension } from '../utils/files.helper';
 
 export const loadCommands = async (program: Command) => {
   const logger = new OrbitLogger('[LOADER]');
+  
   const commandsDir = path.join(__dirname, '.');
   const fileExtension = getScriptFileExtension();
 

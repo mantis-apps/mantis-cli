@@ -1,5 +1,5 @@
 import Logger, { LoggerOptions } from '@ptkdev/logger';
-import fs, { PathLike } from 'fs';
+import fs from 'fs';
 import path from 'path';
 import shell from 'shelljs';
 

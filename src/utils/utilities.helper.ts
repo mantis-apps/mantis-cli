@@ -1,5 +1,4 @@
-import os from 'node:os';
-import shell from 'shelljs';
+
 /**
  * Clears the console screen.
  */

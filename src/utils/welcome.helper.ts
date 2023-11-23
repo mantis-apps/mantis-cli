@@ -1,5 +1,4 @@
 import figlet from 'figlet';
-import chalk from 'chalk';
 import { clearConsole } from './utilities.helper';
 import { printWithMantisGradient } from './prettyPrint.helper';
 
