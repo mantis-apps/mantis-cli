@@ -15,7 +15,6 @@ export const welcome = async () => {
 
   });
 
-  // return printWithMantisGradient(text);
-  return console.log(chalk.green(text));
+  return printWithMantisGradient(text);;
 };
 
