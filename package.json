@@ -60,7 +60,6 @@
     "gradient-string": "^2.0.2",
     "inquirer": "^9.2.12",
     "node-emoji": "^2.1.3",
-    "os-name": "^5.1.0",
     "shelljs": "^0.8.5",
     "tree-kill": "^1.2.2"
   },
@@ -69,6 +68,7 @@
     "@commitlint/config-angular": "18.4.3",
     "@types/chalk-animation": "^1.6.3",
     "@types/figlet": "^1.5.8",
+    "@types/gradient-string": "^1.1.5",
     "@types/inquirer": "^9.0.7",
     "@types/jest": "^29.5.9",
     "@types/node": "^20.9.4",

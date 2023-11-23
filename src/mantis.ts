@@ -6,9 +6,9 @@ import { welcome } from './utils/welcome.helper';
 
 const bootstrap = async () => {
   await welcome();
+
   const logger = new OrbitLogger('[BOOTSTRAP]');
 
-  
   logger.debug('🚀 STARTED MANTIS-CLI 🚀');
 
   program
