@@ -16,7 +16,7 @@ import { ActionFunction } from 'src/actions/actionTypes';
  * 
  * @param {Command} program - The Commander program instance to which the commands will be added.
  */
-export function loadCommands(program: Command) {
+export async function loadCommands(program: Command) {
   const logger = new OrbitLogger('[LOADER]');
 
   const commandsDir = path.join(__dirname, '.');
@@ -32,9 +32,9 @@ export function loadCommands(program: Command) {
 
     logger.debug('Command Files:', commandFiles);
 
-    commandFiles.forEach(file => {
+    commandFiles.forEach(async file => {
       try {
-        const command = require(path.join(commandsDir, file));
+        const command = await require(path.join(commandsDir, file));
         if (command.default) {
           program.addCommand(command.default);
         } else {

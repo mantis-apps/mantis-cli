@@ -1,8 +1,9 @@
 import { prompt } from "enquirer";
 import { isValidPath, isValidVariableName } from "../../utils/globalValidators.helper";
-import { printWithMantisGradient } from "../../utils/prettyPrint.helper";
+import { printWithBadge, printWithMantisGradient } from "../../utils/prettyPrint.helper";
 import { Action } from "../abstract.action";
 import { StartCommandOptions } from "./start.types";
+import { execCommand } from "../../utils/process.helper";
 
 export default class StartAction extends Action {
     private options: StartCommandOptions;
@@ -16,10 +17,14 @@ export default class StartAction extends Action {
         printWithMantisGradient(`🛖   NX WORKSPACE CREATION   🛠️`);
 
         this.logger.debug(`Started [START] Action...`, this.options);
-        const { workspace, createMobileApp } = this.options && this.options.workspace ? this.options : await this.getWorkspaceInfo();
+
+        console.log(printWithBadge({text: 'Hello World !'}));
+
+        const { workspace, workDir, createMobileApp } = this.options && this.options.workspace ? this.options : await this.getWorkspaceInfo();
 
         this.logger.debug(`Prompts Answers: ${workspace} - ${createMobileApp}`);
 
+        this.createNxWorkspace(workspace, workDir, createMobileApp);
 
     }
 
@@ -46,6 +51,29 @@ export default class StartAction extends Action {
                 initial: false
             }
         ]) as Promise<StartCommandOptions>;
+    }
+
+    private createNxWorkspace(workspace: string, workDir: string, createMobileApp: boolean) {
+        try {
+
+            this.logger.info(`Creating NX workspace in ${workDir}...`);
+            const command = `npx create-nx-workspace ${workspace} --preset nest --name ${workspace} --appName server --nxCloud false --docker true`;
+            
+            execCommand({
+                command,
+                cwd: workDir,
+                useSpinner: true
+            });
+        
+            this.logger.info(`NX workspace '${workspace}' created successfully.`);
+
+            if (createMobileApp) {
+                // TODO: Additional logic to create a mobile app
+            }
+        } catch (error) {
+            this.logger.error(`Failed to create NX workspace: ${error.message}`);
+            throw error;
+        }
     }
 
 }
