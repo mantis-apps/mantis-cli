@@ -11,7 +11,7 @@ export class OrbitLogger {
     private defaultOptions: LoggerOptions = {
         language: "en",
         colors: true,
-        debug: true,
+        debug: false,
         info: true,
         warning: true,
         error: true,

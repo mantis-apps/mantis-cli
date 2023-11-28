@@ -1,4 +1,4 @@
-export type ActionFunction = (...args: any[]) => void;
+export type ActionFunction = (...args: any[]) => any;
 
 export interface ActionFile {
     [key: string]: ActionFunction
