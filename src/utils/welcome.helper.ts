@@ -10,9 +10,7 @@ export const welcome = async () => {
   clearConsole();
 
   const text = figlet.textSync('MANTIS-CLI', {
-    horizontalLayout: 'full',
-    font: 'ANSI Shadow'
-
+    horizontalLayout: 'full'
   });
 
   return printWithMantisGradient(text);;
