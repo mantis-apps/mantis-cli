@@ -8,6 +8,7 @@
   "engines": {
     "node": ">= 18"
   },
+  "main": "dist/mantis.js",
   "bin": {
     "mantis": "./dist/mantis.js"
   },

@@ -20,7 +20,7 @@ export default class StartAction extends Action {
 
         this.logger.debug(`Started [START] Action...`, this.options);
 
-        console.log(printWithBadge({text: 'Hello World !'}));
+        console.log(printWithBadge({ text: 'Hello World !' }));
 
         const { workspace, workDir, createMobileApp } = this.options && this.options.workspace ? this.options : await this.getWorkspaceInfo();
 
@@ -28,6 +28,7 @@ export default class StartAction extends Action {
 
         try {
             this.createNxWorkspace(workspace, workDir, createMobileApp);
+            this.changeDirectory(workspace)
             this.installDependencies();
             this.createApplications(workspace);
             this.createLibraryDirectories();
@@ -78,13 +79,13 @@ export default class StartAction extends Action {
 
             this.logger.info(`Creating NX workspace in ${workDir}...`);
             const command = `npx create-nx-workspace ${workspace} --preset nest --name ${workspace} --appName server --nxCloud false --docker true`;
-            
+
             execCommand({
                 command,
                 cwd: workDir,
                 useSpinner: false
             });
-        
+
             this.logger.info(`NX workspace '${workspace}' created successfully.`);
 
             if (createMobileApp) {
@@ -108,11 +109,11 @@ export default class StartAction extends Action {
         const slugifiedName = workspace.toLowerCase().replace(/\s+/g, '-');
         this.logger.info('Creating Ionic applications...');
         execCommand({
-            command: `npx nx generate @nxext/ionic-angular:application ${slugifiedName}-web`,
+            command: `npx nx generate @nxext/ionic-angular:application ${slugifiedName}-web --template=blank`,
             useSpinner: false
         });
         execCommand({
-            command: `npx nx generate @nxext/ionic-angular:application ${slugifiedName}-mobile`,
+            command: `npx nx generate @nxext/ionic-angular:application ${slugifiedName}-mobile --template=blank`,
             useSpinner: false
         });
     }
@@ -192,7 +193,7 @@ export default class StartAction extends Action {
         const mobileAppRoutingModulePath = `${workspaceRoot}/apps/${slugifiedName}-mobile/src/app/app-routing.module.ts`;
         const sharedHomeFeaturePath = `@${workspace}/shared/home/feature`;
 
-        this.logger.info('Updating import paths...');
+        this.logger.info('-> Updating import paths...');
         execCommand({
             command: `sed -i 's/lib\\/shared-home-feature\\/shared-home-feature.component/lib\\/home.module/g' ${featureLibIndexPath}`,
             useSpinner: false
@@ -211,6 +212,14 @@ export default class StartAction extends Action {
         this.logger.info('Installing concurrently package...');
         execCommand({
             command: 'npm install --save-dev concurrently',
+            useSpinner: false
+        });
+    }
+
+    private changeDirectory(path: string) {
+        this.logger.info(`Changing Directory to ${path}...`);
+        return execCommand({
+            command: `cd ${path}`,
             useSpinner: false
         });
     }

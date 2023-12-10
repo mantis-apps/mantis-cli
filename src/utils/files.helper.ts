@@ -23,3 +23,4 @@ export function getCommandName(filename: string): string {
   // before the first dot, which typically represents the command.
   return path.basename(filename).split('.').at(0) as string;
 }
+
