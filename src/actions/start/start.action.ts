@@ -3,6 +3,7 @@ import { isValidPath, isValidVariableName } from "../../utils/globalValidators.h
 import { printWithBadge, printWithMantisGradient } from "../../utils/prettyPrint.helper";
 import { Action } from "../abstract.action";
 import { StartCommandOptions } from "./start.types";
+import { changeDirectory, createDirectory, moveFile, removeFile, replaceInFiles } from "../../utils/files.helper";
 import { execCommand } from "../../utils/process.helper";
 import fs from 'fs';
 import path from 'path';
@@ -27,8 +28,8 @@ export default class StartAction extends Action {
         this.logger.debug(`Prompts Answers: ${workspace} - ${createMobileApp}`);
 
         try {
-            this.createNxWorkspace(workspace, workDir, createMobileApp);
-            this.changeDirectory(workspace)
+            this.createNxWorkspace(workspace, createMobileApp);
+            changeDirectory(path.resolve(workspace));
             this.installDependencies();
             this.createApplications(workspace);
             this.createLibraryDirectories();
@@ -58,13 +59,12 @@ export default class StartAction extends Action {
                 initial: 'mantis',
                 validate: (value) => isValidVariableName(value),
             },
-            {
-                type: 'input',
-                name: 'workDir',
-                message: 'Specify the Workdir:',
-                validate: (value) => isValidPath(value),
-            },
-
+            // {
+            //     type: 'input',
+            //     name: 'workDir',
+            //     message: 'Specify the Workdir:',
+            //     validate: (value) => isValidPath(value),
+            // },
             {
                 name: 'createMobileApp',
                 message: 'Do you want to create a separate mobile app?',
@@ -74,15 +74,14 @@ export default class StartAction extends Action {
         ]) as Promise<StartCommandOptions>;
     }
 
-    private createNxWorkspace(workspace: string, workDir: string, createMobileApp: boolean) {
+    private createNxWorkspace(workspace: string, createMobileApp: boolean) {
         try {
 
-            this.logger.info(`Creating NX workspace in ${workDir}...`);
+            this.logger.info(`Creating NX workspace in ${process.cwd()}...`);
             const command = `npx create-nx-workspace ${workspace} --preset nest --name ${workspace} --appName server --nxCloud false --docker true`;
 
             execCommand({
                 command,
-                cwd: workDir,
                 useSpinner: false
             });
 
@@ -107,23 +106,20 @@ export default class StartAction extends Action {
 
     private createApplications(workspace: string) {
         const slugifiedName = workspace.toLowerCase().replace(/\s+/g, '-');
-        this.logger.info('Creating Ionic applications...');
+        this.logger.info(`Creating Ionic applications in ${process.cwd()}...`);
         execCommand({
-            command: `npx nx generate @nxext/ionic-angular:application --directory ${slugifiedName}-web --template=blank`,
+            command: `npx nx generate @nxext/ionic-angular:application ${slugifiedName}-web --template=blank`,
             useSpinner: false
         });
         execCommand({
-            command: `npx nx generate @nxext/ionic-angular:application --directory ${slugifiedName}-mobile --template=blank`,
+            command: `npx nx generate @nxext/ionic-angular:application ${slugifiedName}-mobile --template=blank`,
             useSpinner: false
         });
     }
 
     private createLibraryDirectories() {
         this.logger.info('Creating library directories...');
-        execCommand({
-            command: 'mkdir -p libs/shared/home libs/mobile libs/web',
-            useSpinner: false
-        });
+        createDirectory('-p', ['libs/shared/home', 'libs/mobile', 'libs/web']);
     }
 
     private installAngularPackage() {
@@ -150,10 +146,7 @@ export default class StartAction extends Action {
 
         if (fs.existsSync(sourcePath)) {
             this.logger.info('Moving content...');
-            execCommand({
-                command: `mv ${sourcePath}/* ${destinationPath}`,
-                useSpinner: false
-            });
+            moveFile(`${sourcePath}/*`, destinationPath);
         } else {
             this.logger.error(`Directory ${sourcePath} not found.`);
         }
@@ -167,10 +160,7 @@ export default class StartAction extends Action {
         const featureLibPath = `${workspaceRoot}/libs/shared/home/feature/src/lib/shared-home-feature`;
 
         this.logger.info('Cleaning up unnecessary directories...');
-        execCommand({
-            command: `rm -rf ${webAppPath} ${mobileAppPath} ${featureLibPath}`,
-            useSpinner: false
-        });
+        removeFile('-rf', [webAppPath, mobileAppPath, featureLibPath]);
     }
 
     private replaceHomePage(workspace: string) {
@@ -178,34 +168,23 @@ export default class StartAction extends Action {
         const featureLibPath = `${workspaceRoot}/libs/shared/home/feature/src/lib`;
 
         this.logger.info('Replacing instances of HomePage with HomePageComponent...');
-        execCommand({
-            command: `find ${featureLibPath} -type f -exec sed -i 's/HomePage/HomePageComponent/g' {} \\;`,
-            useSpinner: false
-        });
+        replaceInFiles(featureLibPath, 'HomePage', 'HomePageComponent');
     }
 
     private updateImportPaths(workspace: string) {
         const workspaceRoot = process.cwd();
         const slugifiedName = workspace.toLowerCase().replace(/\s+/g, '-');
 
-        const featureLibIndexPath = `${workspaceRoot}/libs/shared/home/feature/src/index.ts`;
-        const webAppRoutingModulePath = `${workspaceRoot}/apps/${slugifiedName}-web/src/app/app-routing.module.ts`;
-        const mobileAppRoutingModulePath = `${workspaceRoot}/apps/${slugifiedName}-mobile/src/app/app-routing.module.ts`;
+        const featureLibIndexPath = path.resolve(`${workspaceRoot}/libs/shared/home/feature/src/index.ts`);
+        const webAppRoutingModulePath = path.resolve(`${workspaceRoot}/apps/${slugifiedName}-web/src/app/app-routing.module.ts`);
+        const mobileAppRoutingModulePath = path.resolve(`${workspaceRoot}/apps/${slugifiedName}-mobile/src/app/app-routing.module.ts`);
         const sharedHomeFeaturePath = `@${workspace}/shared/home/feature`;
 
         this.logger.info('-> Updating import paths...');
-        execCommand({
-            command: `sed -i 's/lib\\/shared-home-feature\\/shared-home-feature.component/lib\\/home.module/g' ${featureLibIndexPath}`,
-            useSpinner: false
-        });
-        execCommand({
-            command: `sed -i "s|import('./home/home.module').then((m) => m.HomePageModule)|import('${sharedHomeFeaturePath}').then((m) => m.HomePageComponentModule)|g" "${webAppRoutingModulePath}"`,
-            useSpinner: false
-        });
-        execCommand({
-            command: `sed -i "s|import('./home/home.module').then((m) => m.HomePageModule)|import('${sharedHomeFeaturePath}').then((m) => m.HomePageComponentModule)|g" "${mobileAppRoutingModulePath}"`,
-            useSpinner: false
-        });
+
+        replaceInFiles(featureLibIndexPath, 'lib/shared-home-feature/shared-home-feature.component', 'lib/home.module');
+        replaceInFiles(webAppRoutingModulePath, "import\\('./home/home.module'\\)\\.then\\(\\(m\\) => m\\.HomePageModule\\)", `import('${sharedHomeFeaturePath}').then((m) => m.HomePageComponentModule)`);
+        replaceInFiles(mobileAppRoutingModulePath, "import\\('./home/home.module'\\)\\.then\\(\\(m\\) => m\\.HomePageModule\\)", `import('${sharedHomeFeaturePath}').then((m) => m.HomePageComponentModule)`);
     }
 
     private installConcurrentlyPackage() {
@@ -216,12 +195,6 @@ export default class StartAction extends Action {
         });
     }
 
-    private changeDirectory(path: string) {
-        this.logger.info(`Changing Directory to ${path}...`);
-        return execCommand({
-            command: `cd ${path}`,
-            useSpinner: false
-        });
-    }
+
 }
 

@@ -1,5 +1,5 @@
 export interface StartCommandOptions {
     workspace: string,
-    workDir: string,
+    workDir?: string,
     createMobileApp: boolean
 }
