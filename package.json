@@ -29,7 +29,7 @@
     "prerelease": "npm run build",
     "release": "release-it",
     "prepare": "husky install",
-    "install:locally": "npm run build && npm npm install -g ."
+    "install:locally": "npm run build && npm install -g ."
   },
   "repository": {
     "type": "git",

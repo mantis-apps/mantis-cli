@@ -109,11 +109,11 @@ export default class StartAction extends Action {
         const slugifiedName = workspace.toLowerCase().replace(/\s+/g, '-');
         this.logger.info('Creating Ionic applications...');
         execCommand({
-            command: `npx nx generate @nxext/ionic-angular:application ${slugifiedName}-web --template=blank`,
+            command: `npx nx generate @nxext/ionic-angular:application --directory ${slugifiedName}-web --template=blank`,
             useSpinner: false
         });
         execCommand({
-            command: `npx nx generate @nxext/ionic-angular:application ${slugifiedName}-mobile --template=blank`,
+            command: `npx nx generate @nxext/ionic-angular:application --directory ${slugifiedName}-mobile --template=blank`,
             useSpinner: false
         });
     }
