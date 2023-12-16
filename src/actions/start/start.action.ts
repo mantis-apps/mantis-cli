@@ -3,7 +3,7 @@ import { isValidPath, isValidVariableName } from "../../utils/globalValidators.h
 import { printWithBadge, printWithMantisGradient } from "../../utils/prettyPrint.helper";
 import { Action } from "../abstract.action";
 import { StartCommandOptions } from "./start.types";
-import { changeDirectory, createDirectory, moveFile, removeFile, replaceInFiles } from "../../utils/files.helper";
+import { changeDirectory, createDirectory, moveFile, removeFile, replaceInFile, replaceInFiles } from "../../utils/files.helper";
 import { execCommand } from "../../utils/process.helper";
 import fs from 'fs';
 import path from 'path';
@@ -78,7 +78,7 @@ export default class StartAction extends Action {
         try {
 
             this.logger.info(`Creating NX workspace in ${process.cwd()}...`);
-            const command = `npx create-nx-workspace ${workspace} --preset nest --name ${workspace} --appName server --nxCloud false --docker true`;
+            const command = `npx create-nx-workspace ${workspace} --preset nest --name ${workspace} --appName server --nxCloud false --docker true --create`;
 
             execCommand({
                 command,
@@ -182,9 +182,9 @@ export default class StartAction extends Action {
 
         this.logger.info('-> Updating import paths...');
 
-        replaceInFiles(featureLibIndexPath, 'lib/shared-home-feature/shared-home-feature.component', 'lib/home.module');
-        replaceInFiles(webAppRoutingModulePath, "import\\('./home/home.module'\\)\\.then\\(\\(m\\) => m\\.HomePageModule\\)", `import('${sharedHomeFeaturePath}').then((m) => m.HomePageComponentModule)`);
-        replaceInFiles(mobileAppRoutingModulePath, "import\\('./home/home.module'\\)\\.then\\(\\(m\\) => m\\.HomePageModule\\)", `import('${sharedHomeFeaturePath}').then((m) => m.HomePageComponentModule)`);
+        replaceInFile(featureLibIndexPath, 'lib/shared-home-feature/shared-home-feature.component', 'lib/home.module');
+        replaceInFile(webAppRoutingModulePath, "import\\('./home/home.module'\\)\\.then\\(\\(m\\) => m\\.HomePageModule\\)", `import('${sharedHomeFeaturePath}').then((m) => m.HomePageComponentModule)`);
+        replaceInFile(mobileAppRoutingModulePath, "import\\('./home/home.module'\\)\\.then\\(\\(m\\) => m\\.HomePageModule\\)", `import('${sharedHomeFeaturePath}').then((m) => m.HomePageComponentModule)`);
     }
 
     private installConcurrentlyPackage() {

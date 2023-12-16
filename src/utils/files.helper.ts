@@ -129,3 +129,29 @@ export function replaceInFiles(dir: string, searchStr: string, replaceStr: strin
     throw error;
   }
 }
+
+/**
+ * Replaces a specified string with another in a given file.
+ * 
+ * @param {string} filePath - Path to the file where replacements are to be made.
+ * @param {string} searchStr - The string to search for in the file.
+ * @param {string} replaceStr - The string to replace the searchStr with.
+ */
+export function replaceInFile(filePath: string, searchStr: string, replaceStr: string) {
+  const logger = new OrbitLogger('FILE-REPLACER');
+
+  try {
+    let content = fs.readFileSync(filePath, 'utf8');
+    const originalContent = content;
+    content = content.replace(new RegExp(searchStr, 'g'), replaceStr);
+    fs.writeFileSync(filePath, content, 'utf8');
+
+    logger.info(`Replaced occurrences in file: ${filePath}`);
+    if (originalContent === content) {
+      logger.info(`No replacements made in file: ${filePath}`);
+    }
+  } catch (error) {
+    logger.error(`Error replacing in file: ${filePath}, ${error.message}`);
+    throw error; // Rethrow the error for further handling if necessary
+  }
+}
