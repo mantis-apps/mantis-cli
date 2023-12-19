@@ -1,12 +1,14 @@
 import { prompt } from "enquirer";
-import { isValidPath, isValidVariableName } from "../../utils/globalValidators.helper";
+import { isValidVariableName } from "../../utils/globalValidators.helper";
 import { printWithBadge, printWithMantisGradient } from "../../utils/prettyPrint.helper";
 import { Action } from "../abstract.action";
 import { StartCommandOptions } from "./start.types";
 import { changeDirectory, createDirectory, moveFile, removeFile, replaceInFile, replaceInFiles } from "../../utils/files.helper";
-import { execCommand } from "../../utils/process.helper";
+import { checkPortAvailability, execCommand, findAvailablePort } from "../../utils/process.helper";
 import fs from 'fs';
 import path from 'path';
+import { OrbitLogger } from "src/utils/orbitLogger.helper";
+import portscanner from 'portscanner';
 
 export default class StartAction extends Action {
     private options: StartCommandOptions;
@@ -39,9 +41,9 @@ export default class StartAction extends Action {
             this.cleanupDirectories(workspace);
             this.replaceHomePage(workspace);
             this.updateImportPaths(workspace);
-            this.installConcurrentlyPackage();
-            // this.checkPorts(); // Uncomment if needed
-            // this.launchApplications(workspace); // Uncomment if needed
+            // this.installConcurrentlyPackage();
+            await this.checkPorts(createMobileApp);
+            this.launchApplications();
 
             this.logger.info('Workspace setup complete!');
         } catch (error) {
@@ -195,6 +197,41 @@ export default class StartAction extends Action {
         });
     }
 
+    private async checkPorts(createMobileApp: boolean) {
+        let webPort = Number(process.env.WebPort) || 4200;
+        let mobilePort = Number(process.env.MobilePort) || 4300;
+        let serverPort = Number(process.env.ServerPort) || 3000;
 
+        const isWebPortAvailable = await checkPortAvailability({ port: webPort });
+        const isMobilePortAvailable = createMobileApp ? await checkPortAvailability({ port: mobilePort }) : true;
+        const isServerPortAvailable = await checkPortAvailability({ port: serverPort });
+
+        if (!isWebPortAvailable) {
+            this.logger.warning(`Port ${webPort} (Web) is already in use`);
+            process.env.WebPort = (await findAvailablePort({ startPort: webPort, endPort: webPort + 99 })).toString();
+        }
+        if (!isMobilePortAvailable) {
+            this.logger.warning(`Port ${mobilePort} (Mobile) is already in use`);
+            process.env.MobilePort = (await findAvailablePort({ startPort: mobilePort, endPort: mobilePort + 99 })).toString();
+        }
+        if (!isServerPortAvailable) {
+            this.logger.warning(`Port ${serverPort} (Server) is already in use`);
+            process.env.ServerPort = (await findAvailablePort({ startPort: serverPort, endPort: serverPort + 99 })).toString();
+        }
+    }
+
+    private launchApplications() {
+        const command = 'npx nx run-many --target=serve --all --maxParallel=100';
+
+        try {
+            this.logger.info('Launching applications...');
+            execCommand({ command, useSpinner: true });
+
+            this.logger.sponsor('Applications launched successfully.');
+        } catch (error) {
+            this.logger.error(`Error launching applications: ${error.message}`);
+            throw error; // Rethrow the error for further handling if necessary
+        }
+    }
 }
 
