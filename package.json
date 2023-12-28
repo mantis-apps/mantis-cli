@@ -1,6 +1,6 @@
 {
   "name": "mantis-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "M.A.N.T.I.S (MongoDB, Angular, NestJS, Tailwind CSS, Ionic, Storybook) is not just a CLI tool; it's your passport to a seamless full-stack project launch.",
   "publishConfig": {
     "access": "public"
