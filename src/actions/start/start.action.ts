@@ -12,6 +12,7 @@ import portscanner from 'portscanner';
 
 export default class StartAction extends Action {
     private options: StartCommandOptions;
+    private createMobileApp: boolean = false;
 
     constructor(options: StartCommandOptions) {
         super('[START-ACTION]');
@@ -27,10 +28,12 @@ export default class StartAction extends Action {
 
         const { workspace, workDir, createMobileApp } = this.options && this.options.workspace ? this.options : await this.getWorkspaceInfo();
 
+        this.createMobileApp = createMobileApp || false;
+
         this.logger.debug(`Prompts Answers: ${workspace} - ${createMobileApp}`);
 
         try {
-            this.createNxWorkspace(workspace, createMobileApp);
+            this.createNxWorkspace(workspace);
             changeDirectory(path.resolve(workspace));
             this.installDependencies();
             this.createApplications(workspace);
@@ -42,12 +45,13 @@ export default class StartAction extends Action {
             this.replaceHomePage(workspace);
             this.updateImportPaths(workspace);
             // this.installConcurrentlyPackage();
-            await this.checkPorts(createMobileApp);
+            // await this.checkPorts();
             this.launchApplications();
 
             this.logger.info('Workspace setup complete!');
         } catch (error) {
             this.logger.error(`Error occurred during workspace setup: ${error.message}`);
+            throw error;
         }
 
     }
@@ -60,27 +64,15 @@ export default class StartAction extends Action {
                 message: 'Enter the name of the workspace (default is mantis):',
                 initial: 'mantis',
                 validate: (value) => isValidVariableName(value),
-            },
-            // {
-            //     type: 'input',
-            //     name: 'workDir',
-            //     message: 'Specify the Workdir:',
-            //     validate: (value) => isValidPath(value),
-            // },
-            {
-                name: 'createMobileApp',
-                message: 'Do you want to create a separate mobile app?',
-                type: 'confirm',
-                initial: false
             }
         ]) as Promise<StartCommandOptions>;
     }
 
-    private createNxWorkspace(workspace: string, createMobileApp: boolean) {
+    private createNxWorkspace(workspace: string) {
         try {
 
             this.logger.info(`Creating NX workspace in ${process.cwd()}...`);
-            const command = `npx create-nx-workspace ${workspace} --preset nest --name ${workspace} --appName server --nxCloud false --docker true --create`;
+            const command = `npx -y create-nx-workspace ${workspace} --preset nest --name ${workspace} --appName server --nxCloud false --docker true --create`;
 
             execCommand({
                 command,
@@ -89,9 +81,6 @@ export default class StartAction extends Action {
 
             this.logger.info(`NX workspace '${workspace}' created successfully.`);
 
-            if (createMobileApp) {
-                // TODO: Additional logic to create a mobile app
-            }
         } catch (error) {
             this.logger.error(`Failed to create NX workspace: ${error.message}`);
             throw error;
@@ -110,18 +99,24 @@ export default class StartAction extends Action {
         const slugifiedName = workspace.toLowerCase().replace(/\s+/g, '-');
         this.logger.info(`Creating Ionic applications in ${process.cwd()}...`);
         execCommand({
-            command: `npx nx generate @nxext/ionic-angular:application ${slugifiedName}-web --template=blank`,
+            command: `npx nx generate @nxext/ionic-angular:application ${slugifiedName}-app --template=blank`,
             useSpinner: false
         });
-        execCommand({
-            command: `npx nx generate @nxext/ionic-angular:application ${slugifiedName}-mobile --template=blank`,
-            useSpinner: false
-        });
+        if (this.createMobileApp) {
+            execCommand({
+                command: `npx nx generate @nxext/ionic-angular:application ${slugifiedName}-mobile --template=blank`,
+                useSpinner: false
+            });
+        }
     }
 
     private createLibraryDirectories() {
         this.logger.info('Creating library directories...');
-        createDirectory('-p', ['libs/shared/home', 'libs/mobile', 'libs/web']);
+        const LibsFolders = ['libs/shared/home', 'libs/web'];
+
+        if (this.createMobileApp) LibsFolders.push('libs/mobile');
+
+        createDirectory('-p', LibsFolders);
     }
 
     private installAngularPackage() {
@@ -143,7 +138,7 @@ export default class StartAction extends Action {
     private moveContent(workspace: string) {
         const slugifiedName = workspace.toLowerCase().replace(/\s+/g, '-');
         const workspaceRoot = process.cwd();
-        const sourcePath = `${workspaceRoot}/apps/${slugifiedName}-web/src/app/home`;
+        const sourcePath = `${workspaceRoot}/apps/${slugifiedName}-app/src/app/home`;
         const destinationPath = `${workspaceRoot}/libs/shared/home/feature/src/lib`;
 
         if (fs.existsSync(sourcePath)) {
@@ -157,12 +152,15 @@ export default class StartAction extends Action {
     private cleanupDirectories(workspace: string) {
         const slugifiedName = workspace.toLowerCase().replace(/\s+/g, '-');
         const workspaceRoot = process.cwd();
-        const webAppPath = `${workspaceRoot}/apps/${slugifiedName}-web/src/app/home`;
+        const webAppPath = `${workspaceRoot}/apps/${slugifiedName}-app/src/app/home`;
         const mobileAppPath = `${workspaceRoot}/apps/${slugifiedName}-mobile/src/app/home`;
         const featureLibPath = `${workspaceRoot}/libs/shared/home/feature/src/lib/shared-home-feature`;
 
+        const pathsToRemove = [webAppPath, featureLibPath];
+        if (this.createMobileApp) pathsToRemove.push(mobileAppPath);
+
         this.logger.info('Cleaning up unnecessary directories...');
-        removeFile('-rf', [webAppPath, mobileAppPath, featureLibPath]);
+        removeFile('-rf', pathsToRemove);
     }
 
     private replaceHomePage(workspace: string) {
@@ -178,15 +176,17 @@ export default class StartAction extends Action {
         const slugifiedName = workspace.toLowerCase().replace(/\s+/g, '-');
 
         const featureLibIndexPath = path.resolve(`${workspaceRoot}/libs/shared/home/feature/src/index.ts`);
-        const webAppRoutingModulePath = path.resolve(`${workspaceRoot}/apps/${slugifiedName}-web/src/app/app-routing.module.ts`);
-        const mobileAppRoutingModulePath = path.resolve(`${workspaceRoot}/apps/${slugifiedName}-mobile/src/app/app-routing.module.ts`);
+        const webAppRoutingModulePath = path.resolve(`${workspaceRoot}/apps/${slugifiedName}-app/src/app/app-routing.module.ts`);
+        const webAppGlobalStylesPath = path.resolve(`${workspaceRoot}/apps/${slugifiedName}-app/src/styles.scss`);
+        const mobileAppRoutingModulePath = this.createMobileApp ? path.resolve(`${workspaceRoot}/apps/${slugifiedName}-mobile/src/app/app-routing.module.ts`) : '';
         const sharedHomeFeaturePath = `@${workspace}/shared/home/feature`;
 
         this.logger.info('-> Updating import paths...');
 
+        replaceInFile(webAppGlobalStylesPath, '~@', '@');
         replaceInFile(featureLibIndexPath, 'lib/shared-home-feature/shared-home-feature.component', 'lib/home.module');
         replaceInFile(webAppRoutingModulePath, "import\\('./home/home.module'\\)\\.then\\(\\(m\\) => m\\.HomePageModule\\)", `import('${sharedHomeFeaturePath}').then((m) => m.HomePageComponentModule)`);
-        replaceInFile(mobileAppRoutingModulePath, "import\\('./home/home.module'\\)\\.then\\(\\(m\\) => m\\.HomePageModule\\)", `import('${sharedHomeFeaturePath}').then((m) => m.HomePageComponentModule)`);
+        if (this.createMobileApp) replaceInFile(mobileAppRoutingModulePath, "import\\('./home/home.module'\\)\\.then\\(\\(m\\) => m\\.HomePageModule\\)", `import('${sharedHomeFeaturePath}').then((m) => m.HomePageComponentModule)`);
     }
 
     private installConcurrentlyPackage() {
@@ -197,13 +197,13 @@ export default class StartAction extends Action {
         });
     }
 
-    private async checkPorts(createMobileApp: boolean) {
+    private async checkPorts() {
         let webPort = Number(process.env.WebPort) || 4200;
         let mobilePort = Number(process.env.MobilePort) || 4300;
         let serverPort = Number(process.env.ServerPort) || 3000;
 
         const isWebPortAvailable = await checkPortAvailability({ port: webPort });
-        const isMobilePortAvailable = createMobileApp ? await checkPortAvailability({ port: mobilePort }) : true;
+        const isMobilePortAvailable = this.createMobileApp ? await checkPortAvailability({ port: mobilePort }) : true;
         const isServerPortAvailable = await checkPortAvailability({ port: serverPort });
 
         if (!isWebPortAvailable) {
@@ -230,7 +230,7 @@ export default class StartAction extends Action {
             this.logger.sponsor('Applications launched successfully.');
         } catch (error) {
             this.logger.error(`Error launching applications: ${error.message}`);
-            throw error; // Rethrow the error for further handling if necessary
+            throw error;
         }
     }
 }
