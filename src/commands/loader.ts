@@ -5,7 +5,6 @@ import { OrbitLogger } from '../utils/orbitLogger.helper';
 import { getScriptFileExtension } from '../utils/files.helper';
 import { ActionFunction } from 'src/actions/actionTypes';
 
-
 /**
  * Dynamically loads and registers command modules to the provided Commander program.
  * It scans the commands directory for files ending with `.command.ts` or `.command.js`,
@@ -42,11 +41,12 @@ export async function loadCommands(program: Command) {
         }
       } catch (innerError) {
         logger.error(`Error loading command from file '${file}': ${innerError.message}`);
+        throw new Error(innerError);
       }
     });
   } catch (error) {
     logger.error(`Failed to load commands: ${error.message}`);
-    throw error;
+    throw new Error(error);
   }
 }
 

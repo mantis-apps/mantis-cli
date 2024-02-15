@@ -51,7 +51,7 @@ export default class StartAction extends Action {
             this.logger.info('Workspace setup complete!');
         } catch (error) {
             this.logger.error(`Error occurred during workspace setup: ${error.message}`);
-            throw error;
+            throw new Error(error);
         }
 
     }
@@ -83,7 +83,7 @@ export default class StartAction extends Action {
 
         } catch (error) {
             this.logger.error(`Failed to create NX workspace: ${error.message}`);
-            throw error;
+            throw new Error(error);
         }
     }
 
@@ -230,7 +230,7 @@ export default class StartAction extends Action {
             this.logger.sponsor('Applications launched successfully.');
         } catch (error) {
             this.logger.error(`Error launching applications: ${error.message}`);
-            throw error;
+            throw new Error(error);
         }
     }
 }
