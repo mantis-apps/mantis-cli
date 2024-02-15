@@ -35,7 +35,7 @@ const bootstrap = async () => {
     }
   } catch (error) {
     if (!error) {
-      handleExit();
+      return handleExit();
     }
     logger.error('Error During Bootstrap');
     console.error(error);
