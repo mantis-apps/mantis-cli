@@ -1,11 +1,10 @@
 import { Command } from 'commander';
-import { getCommandName } from '../utils/files.helper';
-import { loadAction } from './loader';
+import StartAction from '../actions/start/start.action';
 
-const currentCommandName = getCommandName(__filename);
-
-export default new Command(currentCommandName)
-    .description('Description of someCommand')
-    .option('-w, --workspace <name>', 'Specify the name of the workspace')
-    .option('--createMobileApp', 'Create a Mobile App')
-    .action(loadAction(currentCommandName));
+export default new Command('start')
+  .description('Description of someCommand')
+  .option('-w, --workspace <name>', 'Specify the name of the workspace')
+  .option('--createMobileApp', 'Create a Mobile App')
+  .action(() => {
+    new StartAction({ workspace: '' }).execute();
+  });

@@ -12,7 +12,7 @@ export abstract class Action {
   }
 
   /**
-   * Abstract method that must be implemented by subclasses. 
+   * Abstract method that must be implemented by subclasses.
    * This is where the action's main functionality will be defined.
    */
   abstract execute(...args: any[]): void;
