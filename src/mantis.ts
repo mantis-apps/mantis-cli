@@ -1,8 +1,9 @@
-#!/usr/bin/env node
 import { program } from 'commander';
-import { loadCommands } from './commands/loader';
 import { OrbitLogger } from './utils/orbitLogger.helper';
 import { welcome } from './utils/welcome.helper';
+import packageJson from '../package.json';
+import initCommand from './commands/init.command';
+import startCommand from './commands/start.command';
 
 const logger = new OrbitLogger('[BOOTSTRAP]');
 
@@ -21,12 +22,17 @@ const bootstrap = async () => {
     process.on('SIGINT', handleExit);
 
     program
-      .version(require('../package.json').version, '-v, --version', 'Output the current version.')
+      .version(
+        packageJson.version,
+        '-v, --version',
+        'Output the current version.',
+      )
       .usage('<command> [options]')
       .option('-v, --verbose', 'Enable verbose mode')
       .helpOption('-h, --help', 'Output usage information.');
 
-    await loadCommands(program);
+    program.addCommand(initCommand);
+    program.addCommand(startCommand);
 
     await program.parseAsync(process.argv);
 

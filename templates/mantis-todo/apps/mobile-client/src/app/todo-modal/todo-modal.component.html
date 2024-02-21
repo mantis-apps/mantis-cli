@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit' : 'Add' }} Todo</ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="!title" (click)="confirm()" [strong]="true">
+        Confirm
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-input
+      [autofocus]="true"
+      labelPlacement="stacked"
+      [(ngModel)]="title"
+      placeholder="What needs to get done today?"
+      (keyup.enter)="confirm()"
+    ></ion-input>
+  </ion-item>
+</ion-content>

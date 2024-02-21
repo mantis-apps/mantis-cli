@@ -1,0 +1,5 @@
+{
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "@ionic/angular/common"
+  ]
+}

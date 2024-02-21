@@ -1,0 +1,30 @@
+<ion-item-sliding #slider>
+  <ion-item>
+    <ion-checkbox
+      justify="start"
+      labelPlacement="end"
+      [checked]="todo.completed"
+      (ionChange)="toggleTodo()"
+    >
+      <ion-text
+        [color]="todo.completed ? 'medium' : undefined"
+        [ngClass]="{ 'line-through': todo.completed }"
+      >
+        {{ todo.title }}
+      </ion-text>
+    </ion-checkbox>
+  </ion-item>
+
+  <ion-item-options>
+    <ion-item-option>
+      <ion-icon
+        slot="icon-only"
+        name="pencil-outline"
+        (click)="editTodo()"
+      ></ion-icon>
+    </ion-item-option>
+    <ion-item-option color="danger" (click)="removeTodo()">
+      <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+    </ion-item-option>
+  </ion-item-options>
+</ion-item-sliding>

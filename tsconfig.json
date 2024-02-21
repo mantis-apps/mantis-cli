@@ -1,28 +1,19 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "module": "commonjs",
-    "target": "ES2021",
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "node",
     "skipLibCheck": true,
     "sourceMap": false,
     "strict": true,
     "useUnknownInCatchVariables": false,
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "types": [
-      "node",
-      "jest"
-    ]
+    "types": ["node", "jest"]
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "e2e",
-    "test",
-    "dist",
-    "**/*spec.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "e2e", "test", "dist", "**/*spec.ts", "templates"]
 }
