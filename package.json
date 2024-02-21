@@ -63,6 +63,7 @@
     "figlet": "^1.7.0",
     "fs-extra": "^11.2.0",
     "gradient-string": "^2.0.2",
+    "mongodb": "^6.3.0",
     "node-emoji": "^2.1.3",
     "nypm": "^0.3.6",
     "portscanner": "^2.2.0",
