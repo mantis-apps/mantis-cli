@@ -1,4 +1,4 @@
-import { prompt } from 'enquirer';
+import Enquirer from 'enquirer';
 import { isValidVariableName } from '../../utils/globalValidators.helper';
 import {
   printWithBadge,
@@ -73,7 +73,7 @@ export default class StartAction extends Action {
   }
 
   private async getWorkspaceInfo(): Promise<StartCommandOptions> {
-    return prompt([
+    return Enquirer.prompt([
       {
         type: 'input',
         name: 'workspace',
