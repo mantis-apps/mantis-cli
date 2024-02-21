@@ -1,7 +1,26 @@
 {
-  "name": "mantis-cli",
-  "version": "0.1.1",
+  "name": "mantis-app",
+  "version": "0.0.2",
+  "author": "FuturizeWorld",
+  "license": "SEE LICENSE IN <LICENSE> FILE",
   "description": "M.A.N.T.I.S (MongoDB, Angular, NestJS, Tailwind CSS, Ionic, Storybook) is not just a CLI tool; it's your passport to a seamless full-stack project launch.",
+  "keywords": [
+    "MongoDB",
+    "Angular",
+    "NestJS",
+    "Tailwind",
+    "CSS",
+    "Ionic",
+    "Storybook"
+  ],
+  "homepage": "https://github.com/mantis-apps/mantis-cli#mantis-cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mantis-apps/mantis-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mantis-apps/mantis-cli/issues"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -12,10 +31,13 @@
   "bin": {
     "mantis": "./bin/mantis.mjs"
   },
+  "files": [
+    "dist",
+    "templates"
+  ],
   "scripts": {
     "start:dev": "npm run build && node dist/mantis.mjs",
     "build": "unbuild",
-    "clean": "gulp clean:bundle",
     "format": "prettier --write \"**/*.ts\"",
     "lint": "eslint '{lib,commands,actions}/**/*.ts' --fix",
     "start": "node dist/mantis.mjs",
@@ -31,25 +53,6 @@
     "prepare": "husky install",
     "install:locally": "npm run build && npm install -g ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/futurizeworld/mantis-cli.git"
-  },
-  "keywords": [
-    "MongoDB",
-    "Angular",
-    "NestJS",
-    "Tailwind",
-    "CSS",
-    "Ionic",
-    "Storybook"
-  ],
-  "author": "FuturizeWorld",
-  "license": "SEE LICENSE IN <LICENSE> FILE",
-  "bugs": {
-    "url": "https://github.com/futurizeworld/mantis-cli/issues"
-  },
-  "homepage": "https://github.com/futurizeworld/mantis-cli#readme",
   "dependencies": {
     "@ptkdev/logger": "^1.8.0",
     "chalk": "4.1.2",
