@@ -29,14 +29,14 @@
   },
   "type": "module",
   "bin": {
-    "mantis": "./bin/mantis.mjs"
+    "mantis-app": "./bin/mantis-app.mjs"
   },
   "files": [
     "dist",
     "templates"
   ],
   "scripts": {
-    "start:dev": "npm run build && node dist/mantis.mjs",
+    "start:dev": "npm run build && node dist/mantis-app.mjs",
     "build": "unbuild",
     "format": "prettier --write \"**/*.ts\"",
     "lint": "eslint '{lib,commands,actions}/**/*.ts' --fix",
@@ -66,9 +66,11 @@
     "figlet": "^1.7.0",
     "fs-extra": "^11.2.0",
     "gradient-string": "^2.0.2",
+    "log-symbols": "^6.0.0",
     "mongodb": "^6.3.0",
     "node-emoji": "^2.1.3",
     "nypm": "^0.3.6",
+    "ora": "^8.0.1",
     "portscanner": "^2.2.0",
     "shelljs": "^0.8.5",
     "spinnies": "^0.5.1",
