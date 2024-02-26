@@ -117,35 +117,42 @@ export function removeFile(options: string, files: string[]): void {
   }
 }
 
+const logger = new OrbitLogger('FILE-REPLACER');
 /**
  * Recursively replaces a specified string with another in all files within a directory.
  *
- * @param {string} dir - Directory to search for files.
- * @param {string} searchStr - The string to search for in the files.
- * @param {string} replaceStr - The string to replace the searchStr with.
+ * @param {object} options - Options for the replaceInFiles function.
+ * @param {string} options.dir - Directory to search for files.
+ * @param {string} options.searchStr - The string to search for in the files.
+ * @param {string} options.replaceStr - The string to replace the searchStr with.
  */
-export function replaceInFiles(
-  dir: string,
-  searchStr: string,
-  replaceStr: string,
-) {
-  const logger = new OrbitLogger('FILE-REPLACER');
+export function replaceInFiles({
+  dir,
+  searchStr,
+  replaceStr,
+}: {
+  dir: string;
+  searchStr: string;
+  replaceStr: string;
+}) {
+  if (searchStr === replaceStr) return;
 
   try {
+    // The sync fs functions are faster for this use case
     fs.readdirSync(dir).forEach((file) => {
       const filePath = path.join(dir, file);
       const stats = fs.statSync(filePath);
 
       if (stats.isFile()) {
-        let content = fs.readFileSync(filePath, 'utf8');
-        content = content.replace(new RegExp(searchStr, 'g'), replaceStr);
-        fs.writeFileSync(filePath, content, 'utf8');
-        logger.info(`Replaced in file: ${filePath}`);
+        const content = fs.readFileSync(filePath, 'utf8');
+        if (content.match(searchStr)) {
+          const newContent = content.replace(searchStr, replaceStr);
+          fs.writeFileSync(filePath, newContent, 'utf8');
+        }
       } else if (stats.isDirectory()) {
-        replaceInFiles(filePath, searchStr, replaceStr); // Recurse into subdirectory
+        replaceInFiles({ dir: filePath, searchStr, replaceStr }); // Recurse into subdirectory
       }
     });
-    logger.info(`Completed replacements in directory: ${dir}`);
   } catch (error) {
     logger.error(`Error replacing in files: ${error.message}`);
     throw error;
