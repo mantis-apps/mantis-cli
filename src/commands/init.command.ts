@@ -6,36 +6,27 @@ import { fileURLToPath } from 'url';
 import { execa } from 'execa';
 import Enquirer from 'enquirer';
 import { MongoClient } from 'mongodb';
+import ora from 'ora';
+import logSymbols from 'log-symbols';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 export default new Command('init')
   .description('Create a basic mantis app')
   .action(async () => {
-    const templatePath = path.resolve(__dirname, '../templates/mantis-todo');
-    const workspacePath = path.join(process.cwd(), 'mantis-todo');
-    // Get db url
-    const dbUrl = await promptForDbUrl();
-    // Copy over files
-    await fs.copy(templatePath, workspacePath, { overwrite: true });
-    const envPath = path.join(workspacePath, 'apps/server/.env.local');
-    await fs.ensureFile(envPath);
-    await fs.appendFile(envPath, `\nMONGODB_URI='${dbUrl}'`);
-    // Install dependencies
-    await installDependencies({
-      cwd: workspacePath,
-    });
-    // Start application
-    await execa(
-      'npx',
-      [
-        'nx',
-        'run-many',
-        '--target=serve',
-        '--projects=web-client,mobile-client,server',
-      ],
-      { cwd: workspacePath, stdio: 'inherit' },
+    const templateName = 'mantis-todo';
+    const templatePath = path.resolve(
+      __dirname,
+      `../templates/${templateName}`,
     );
+    const workspaceName = 'mantis-todo';
+    const workspacePath = path.join(process.cwd(), workspaceName);
+    await fs.ensureDir(workspacePath);
+
+    const dbUrl = await promptForDbUrl();
+    await copyTemplate({ templatePath, workspacePath, secrets: { dbUrl } });
+    await installDependenciesWithMessage(workspacePath);
+    await startApplications(workspacePath);
   });
 
 const promptForDbUrl = async (): Promise<string> => {
@@ -59,4 +50,42 @@ const promptForDbUrl = async (): Promise<string> => {
     },
   ]);
   return dbUrl;
+};
+
+const copyTemplate = async ({
+  templatePath,
+  workspacePath,
+  secrets: { dbUrl },
+}: {
+  templatePath: string;
+  workspacePath: string;
+  secrets: { dbUrl: string };
+}) => {
+  await fs.copy(templatePath, workspacePath, { overwrite: true });
+  const envPath = path.join(workspacePath, 'apps/server/.env.local');
+  await fs.ensureFile(envPath);
+  await fs.appendFile(envPath, `\nMONGODB_URI='${dbUrl}'`);
+};
+
+const installDependenciesWithMessage = async (workspacePath: string) => {
+  const spinner = ora('Installing dependencies').start();
+  await installDependencies({
+    cwd: workspacePath,
+    silent: true,
+  });
+  spinner.succeed('Installed dependencies');
+};
+
+const startApplications = async (workspacePath: string) => {
+  console.log(`${logSymbols.info} Starting applications...`);
+  await execa(
+    'npx',
+    [
+      'nx',
+      'run-many',
+      '--target=serve',
+      '--projects=web-client,mobile-client,server',
+    ],
+    { cwd: workspacePath, stdio: 'inherit' },
+  );
 };
