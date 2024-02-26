@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import fs from 'fs-extra';
 import path from 'path';
-import { installDependencies } from 'nypm';
+import { PackageManagerName, detectPackageManager } from 'nypm';
 import { fileURLToPath } from 'url';
 import { execa } from 'execa';
 import Enquirer from 'enquirer';
@@ -67,11 +67,27 @@ const copyTemplate = async ({
   await fs.appendFile(envPath, `\nMONGODB_URI='${dbUrl}'`);
 };
 
+// Needed until https://github.com/unjs/nypm/issues/115 is resolved
+const pmToInstallCommandMap: Record<PackageManagerName, [string, string[]]> = {
+  npm: ['npm', ['ci']],
+  yarn: ['yarn', ['install', '--frozen-lockfile']],
+  bun: ['bun', ['install', '--frozen-lockfile']],
+  pnpm: ['pnpm', ['install', '--frozen-lockfile']],
+};
+
 const installDependenciesWithMessage = async (workspacePath: string) => {
   const spinner = ora('Installing dependencies').start();
-  await installDependencies({
+  const pm = await detectPackageManager(workspacePath);
+  if (!pm) {
+    throw new Error(
+      'No package manager found in the workspace. Unable to install dependencies.',
+    );
+  }
+  const [command, args] = pmToInstallCommandMap[pm.name];
+  await execa(command, args, {
     cwd: workspacePath,
-    silent: true,
+    /* Ignore output */
+    stdio: 'pipe',
   });
   spinner.succeed('Installed dependencies');
 };
