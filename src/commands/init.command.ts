@@ -8,6 +8,7 @@ import Enquirer from 'enquirer';
 import { MongoClient } from 'mongodb';
 import ora from 'ora';
 import logSymbols from 'log-symbols';
+import { replaceInFiles } from '../utils/files.helper';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -19,17 +20,49 @@ export default new Command('init')
       __dirname,
       `../templates/${templateName}`,
     );
-    const workspaceName = 'mantis-todo';
+    const workspaceName = await promptForWorkspaceName({
+      defaultName: templateName,
+    });
     const workspacePath = path.join(process.cwd(), workspaceName);
-    await fs.ensureDir(workspacePath);
 
     const dbUrl = await promptForDbUrl();
-    await copyTemplate({ templatePath, workspacePath, secrets: { dbUrl } });
+    await copyTemplate({
+      template: { name: templateName, path: templatePath },
+      workspace: { name: workspaceName, path: workspacePath },
+      secrets: { dbUrl },
+    });
     await installDependenciesWithMessage(workspacePath);
     await startApplications(workspacePath);
   });
 
-const promptForDbUrl = async (): Promise<string> => {
+const promptForWorkspaceName = async ({
+  defaultName,
+}: {
+  defaultName: string;
+}) => {
+  interface PromptResult {
+    workspaceName: string;
+  }
+  const { workspaceName } = await Enquirer.prompt<PromptResult>([
+    {
+      type: 'input',
+      name: 'workspaceName' satisfies keyof PromptResult,
+      message: 'Enter the name of the workspace to create:',
+      initial: defaultName,
+      validate: async (value) => {
+        if (value.trim().length <= 0) return 'Workspace name must not be empty';
+        if (await fs.pathExists(value)) {
+          return `Workspace already exists: ${value}`;
+        }
+
+        return true;
+      },
+    },
+  ]);
+  return workspaceName;
+};
+
+const promptForDbUrl = async () => {
   interface PromptResult {
     dbUrl: string;
   }
@@ -53,18 +86,25 @@ const promptForDbUrl = async (): Promise<string> => {
 };
 
 const copyTemplate = async ({
-  templatePath,
-  workspacePath,
+  template,
+  workspace,
   secrets: { dbUrl },
 }: {
-  templatePath: string;
-  workspacePath: string;
+  template: { name: string; path: string };
+  workspace: { name: string; path: string };
   secrets: { dbUrl: string };
 }) => {
-  await fs.copy(templatePath, workspacePath, { overwrite: true });
-  const envPath = path.join(workspacePath, 'apps/server/.env.local');
+  const spinner = ora('Creating workspace').start();
+  await fs.copy(template.path, workspace.path);
+  const envPath = path.join(workspace.path, 'apps/server/.env.local');
   await fs.ensureFile(envPath);
   await fs.appendFile(envPath, `\nMONGODB_URI='${dbUrl}'`);
+  replaceInFiles({
+    dir: workspace.path,
+    searchStr: template.name,
+    replaceStr: workspace.name,
+  });
+  spinner.succeed('Created workspace');
 };
 
 // Needed until https://github.com/unjs/nypm/issues/115 is resolved

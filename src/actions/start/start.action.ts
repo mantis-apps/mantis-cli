@@ -185,7 +185,11 @@ export default class StartAction extends Action {
     this.logger.info(
       'Replacing instances of HomePage with HomePageComponent...',
     );
-    replaceInFiles(featureLibPath, 'HomePage', 'HomePageComponent');
+    replaceInFiles({
+      dir: featureLibPath,
+      searchStr: 'HomePage',
+      replaceStr: 'HomePageComponent',
+    });
   }
 
   private updateImportPaths(workspace: string) {
