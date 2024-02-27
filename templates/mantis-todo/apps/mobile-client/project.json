@@ -64,6 +64,9 @@
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "open": true
+      },
       "configurations": {
         "production": {
           "buildTarget": "mobile-client:build:production"

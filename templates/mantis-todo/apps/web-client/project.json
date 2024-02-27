@@ -60,6 +60,9 @@
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "open": true
+      },
       "configurations": {
         "production": {
           "buildTarget": "web-client:build:production"
