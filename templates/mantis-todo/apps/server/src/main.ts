@@ -14,10 +14,16 @@ async function bootstrap() {
       origin: process.env.FRONTEND_URLS.split(','),
     },
   });
+
   const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 3000;
-  await app.listen(port);
+
+  await app
+    .setGlobalPrefix(globalPrefix)
+    // https://docs.nestjs.com/fundamentals/lifecycle-events#application-shutdown
+    .enableShutdownHooks()
+    .listen(port);
+
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
   );
