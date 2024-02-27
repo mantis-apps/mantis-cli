@@ -63,13 +63,39 @@ const promptForWorkspaceName = async ({
 };
 
 const promptForDbUrl = async () => {
-  interface PromptResult {
+  interface DbTypePromptResult {
+    dbType: string;
+  }
+  const { dbType } = await Enquirer.prompt<DbTypePromptResult>({
+    type: 'select',
+    name: 'dbType' satisfies keyof DbTypePromptResult,
+    message: 'How do you want to connect to the database?',
+    choices: [
+      {
+        name: 'Create a local development mongo db for me (default)',
+        value: 'local',
+      },
+      {
+        name: 'Provide a mongo connection string',
+        value: 'dbUrl',
+      },
+    ],
+    // This is to workaround a bug
+    // https://github.com/enquirer/enquirer/issues/121
+    result(choice) {
+      return (this as any).map(choice)[choice];
+    },
+  });
+  if (dbType === 'local') {
+    return 'local';
+  }
+  interface DbUrlPromptResult {
     dbUrl: string;
   }
-  const { dbUrl } = await Enquirer.prompt<PromptResult>([
+  const { dbUrl } = await Enquirer.prompt<DbUrlPromptResult>([
     {
       type: 'input',
-      name: 'dbUrl' satisfies keyof PromptResult,
+      name: 'dbUrl' satisfies keyof DbUrlPromptResult,
       message: 'Enter the url for the mongo db to connect to:',
       validate: async (value) => {
         if (value.trim().length <= 0) return 'Db url must not be empty';
