@@ -1,6 +1,6 @@
 import { Preview, moduleMetadata } from '@storybook/angular';
 import { initialize, mswLoader } from 'msw-storybook-addon';
-import { ConfigService } from 'app/services/config.service';
+import { ConfigService } from '../src/app/services/config.service';
 import projectConfig from '../project.json';
 import { Injectable } from '@angular/core';
 
@@ -14,7 +14,7 @@ class StorybookConfigService extends ConfigService {
       return `http://localhost:${port}`;
     } else {
       throw new Error(
-        'The storybook target in project.json must have a valid port number.'
+        'The storybook target in project.json must have a valid port number.',
       );
     }
   }
