@@ -23,12 +23,13 @@
       (completed)="updateTodo($event)"
       (beginEdit)="openEditTodoModal($event)"
     />
-    } @if ((todos$ | async)?.length) {
+    }
     <p class="flex flex-col text-center pt-3 pb-16">
+      @if ((todos$ | async)?.length) {
       <ion-note>Swipe an item for more options</ion-note>
+      }
       <ion-note>Pull down to refresh</ion-note>
     </p>
-    }
   </ion-list>
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">

@@ -18,18 +18,18 @@
     </svg>
     <h1 class="font-semibold ml-3 text-lg text-gray-600">Todos</h1>
   </div>
-  @if((todos$ | async)?.length) {
-  <ul class="flex flex-col gap-2 mt-5">
-    @for (todo of todos$ | async; track todo._id) {
-    <li class="">
-      <app-todo-item
-        [todo]="todo"
-        (remove)="removeTodo($event)"
-        (update)="updateTodo($event)"
-      />
-    </li>
-    }
-  </ul>
+  @if ((todos$ | async)?.length) {
+    <ul class="flex flex-col gap-2 mt-5">
+      @for (todo of todos$ | async; track todo._id) {
+        <li>
+          <app-todo-item
+            [todo]="todo"
+            (remove)="removeTodo($event)"
+            (update)="updateTodo($event)"
+          />
+        </li>
+      }
+    </ul>
   }
   <div class="mt-4">
     <app-add-todo (add)="addTodo($event)" />
