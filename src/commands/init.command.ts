@@ -122,7 +122,7 @@ const copyTemplate = async ({
 }) => {
   const spinner = ora('Creating workspace').start();
   await fs.copy(template.path, workspace.path);
-  const envPath = path.join(workspace.path, 'apps/server/.env.local');
+  const envPath = path.join(workspace.path, 'apps/web-client/.env.local');
   await fs.ensureFile(envPath);
   await fs.appendFile(envPath, `\nMONGODB_URI='${dbUrl}'`);
   replaceInFiles({
@@ -160,14 +160,32 @@ const installDependenciesWithMessage = async (workspacePath: string) => {
 
 const startApplications = async (workspacePath: string) => {
   console.log(`${logSymbols.info} Starting applications...`);
-  await execa(
-    'npx',
-    [
-      'nx',
-      'run-many',
-      '--target=serve',
-      '--projects=web-client,mobile-client,server',
-    ],
-    { cwd: workspacePath, stdio: 'inherit' },
-  );
+  try {
+    await execa(
+      'npx',
+      [
+        'nx',
+        'run-many',
+        '--target=serve',
+        '--projects=web-client,mobile-client',
+      ],
+      { cwd: workspacePath, stdio: 'inherit' },
+    );
+  } catch (err: unknown) {
+    if (
+      err &&
+      typeof err === 'object' &&
+      'exitCode' in err &&
+      // 130 is the exit code for SIGINT (ctrl + c)
+      // i.e. the user cancelled the process
+      err.exitCode === 130
+    ) {
+      return;
+    }
+    console.error(
+      `${logSymbols.error} Failed to start applications: ${
+        err instanceof Error ? err.message : 'Unknown cause'
+      }`,
+    );
+  }
 };
