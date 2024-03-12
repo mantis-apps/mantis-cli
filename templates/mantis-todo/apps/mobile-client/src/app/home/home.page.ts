@@ -3,7 +3,7 @@ import { IonRefresherCustomEvent, RefresherEventDetail } from '@ionic/core';
 import { Todo, TodosService } from 'app/services/todos.service';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { ModalController } from '@ionic/angular';
-import { TodoModalComponent } from '../todo-modal/todo-modal.component';
+import { TodoModalComponent } from '../components/todo-modal/todo-modal.component';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +15,7 @@ export class HomePage implements OnInit {
 
   constructor(
     private todosService: TodosService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
   ) {}
 
   ngOnInit(): void {

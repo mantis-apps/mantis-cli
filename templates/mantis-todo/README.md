@@ -8,23 +8,24 @@
 
    - Run `npm install` to install all dependencies
 
-2. Creating a mongo instance
+2. (Optional) Create a remote mongo instance
 
+   - You will need a remote mongo instance set up to deploy this project, but a local instance will be created for you for development if you set `MONGODB_URI='local'` in the `.env.local` file mentioned below.
    - If you don't already have a Mongo db instance you can use, follow the steps to [set up an instance with MongoDB Atlas (it's free)](https://www.mongodb.com/docs/atlas/getting-started/).
 
-3. Create a config file in `apps/server` called `.env.local` i.e. `apps/server/.env.local`.
-4. Place your mongo connection string in that file as the following environment variable
+   1. Create a config file in `apps/web-client` called `.env.local` i.e. `apps/web-client/.env.local`.
+   2. Place your mongo connection string in that file as the following environment variable
 
-   ```shell
-   # Example
-   MONGODB_URI='mongodb+srv://<user>:<password>@<cluster-name>.mongodb.net/?retryWrites=true&w=majority'
-   ```
+      ```shell
+      # Example
+      MONGODB_URI='mongodb+srv://<user>:<password>@<cluster-name>.mongodb.net/?retryWrites=true&w=majority'
+      ```
 
 > To learn more about how Nx loads environment variables, see [Definte Environment Variables](https://nx.dev/recipes/tips-n-tricks/define-environment-variables#define-environment-variables)
 
 ## Start the web app
 
-To start the development servers run `npx nx run-many --target=serve --projects=web-client,mobile-client,server`. Open your browser and navigate to `http://localhost:4200/` to see the web app and `http://localhost:4300/` for the mobile app. Happy coding!
+To start the development servers run `npx nx run-many --target=serve --projects=web-client,mobile-client`. Open your browser and navigate to `http://localhost:4200/` to see the web app and `http://localhost:4300/` for the mobile app. Happy coding!
 
 ## Storybook
 
@@ -39,7 +40,7 @@ To run all of the unit tests, run `npx nx run-many --all --target=test`.
 
 To run all of the unit tests with coverage, run `npx nx run-many --all --target=test --codeCoverage`. The coverage reports will be generated in the `coverage` folder at the root of this repo. You can view the reports in your browser by running `npx serve coverage/apps`.
 
-To run all of the e2e tests, run `npx nx run server:serve` in one terminal window, then run `npx nx run-many --all --target=e2e`.
+To run all of the e2e tests, run `npx nx run-many --all --target=e2e`.
 
 ## Linting
 

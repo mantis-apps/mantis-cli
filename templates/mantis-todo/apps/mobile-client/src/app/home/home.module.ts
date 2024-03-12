@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { HomePage } from './home.page';
 import { HomePageRoutingModule } from './home-routing.module';
-import { TodoItemComponent } from '../todo-item/todo-item.component';
+import { TodoItemComponent } from '../components/todo-item/todo-item.component';
 
 @NgModule({
   imports: [

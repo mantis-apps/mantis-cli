@@ -10,7 +10,7 @@ import { defaultTodoHandlers } from 'stories/todos.msw';
 import { IonicModule } from '@ionic/angular';
 import { TodosService } from 'app/services/todos.service';
 import { provideHttpClient } from '@angular/common/http';
-import { TodoItemComponent } from 'app/todo-item/todo-item.component';
+import { TodoItemComponent } from 'app/components/todo-item/todo-item.component';
 import { importProvidersFrom } from '@angular/core';
 
 const meta: Meta<HomePage> = {
