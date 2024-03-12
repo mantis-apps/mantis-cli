@@ -4,6 +4,11 @@ import { TodoItemComponent } from './todo-item.component';
 const meta: Meta<TodoItemComponent> = {
   component: TodoItemComponent,
   title: 'TodoItemComponent',
+  argTypes: {
+    remove: { action: 'removed' },
+    completed: { action: 'completed' },
+    beginEdit: { action: 'editing begun' },
+  },
 };
 export default meta;
 type Story = StoryObj<TodoItemComponent>;
