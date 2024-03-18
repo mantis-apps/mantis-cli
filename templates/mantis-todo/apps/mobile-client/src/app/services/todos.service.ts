@@ -13,7 +13,10 @@ export type CreateTodo = Omit<Todo, '_id'>;
 
 @Injectable({ providedIn: 'root' })
 export class TodosService {
-  constructor(private http: HttpClient, private config: ConfigService) {}
+  constructor(
+    private http: HttpClient,
+    private config: ConfigService,
+  ) {}
 
   getAllTodos(): Observable<Todo[]> {
     return this.http.get<Todo[]>(`${this.config.getBackendBaseUrl()}/todos`);
@@ -22,20 +25,20 @@ export class TodosService {
   addTodo(todo: CreateTodo): Observable<Todo> {
     return this.http.post<Todo>(
       `${this.config.getBackendBaseUrl()}/todos`,
-      todo
+      todo,
     );
   }
 
   updateTodo(todo: Todo): Observable<Todo> {
     return this.http.patch<Todo>(
       `${this.config.getBackendBaseUrl()}/todos/${todo._id}`,
-      todo
+      todo,
     );
   }
 
   removeTodo(todo: Todo): Observable<void> {
     return this.http.delete<void>(
-      `${this.config.getBackendBaseUrl()}/todos/${todo._id}`
+      `${this.config.getBackendBaseUrl()}/todos/${todo._id}`,
     );
   }
 }

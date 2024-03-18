@@ -46,6 +46,10 @@ To run all of the e2e tests, run `npx nx run-many --all --target=e2e`.
 
 To lint all projects, run `npx nx run-many --all --target=lint`.
 
+## Format
+
+To format all files, run `npx nx format:check --all`.
+
 ## Generating code
 
 This repo comes with some Nx plugins that can be leveraged to help you generate boilerplate.

@@ -24,7 +24,7 @@
       (beginEdit)="openEditTodoModal($event)"
     />
     }
-    <p class="flex flex-col text-center pt-3 pb-16">
+    <p class="flex flex-col pb-16 pt-3 text-center">
       @if ((todos$ | async)?.length) {
       <ion-note>Swipe an item for more options</ion-note>
       }

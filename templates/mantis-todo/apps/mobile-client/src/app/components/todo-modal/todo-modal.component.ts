@@ -35,7 +35,7 @@ export class TodoModalComponent implements OnInit {
         title: this.title,
         completed: this.todo?.completed ?? false,
       } satisfies CreateTodo,
-      'confirm'
+      'confirm',
     );
   }
 }
