@@ -14,7 +14,7 @@ class StorybookConfigService extends ConfigService {
       return `http://localhost:${port}`;
     } else {
       throw new Error(
-        'The storybook target in project.json must have a valid port number.'
+        'The storybook target in project.json must have a valid port number.',
       );
     }
   }

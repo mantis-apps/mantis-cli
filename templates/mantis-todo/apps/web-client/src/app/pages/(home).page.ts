@@ -6,7 +6,7 @@ import { TodoListComponent } from '../components/todo-list/todo-list.component';
   standalone: true,
   imports: [TodoListComponent],
   template: `
-    <main class="flex text-gray-600 bg-gray-100 min-h-screen p-5">
+    <main class="flex min-h-screen bg-gray-100 p-5 text-gray-600">
       <app-todo-list />
     </main>
   `,

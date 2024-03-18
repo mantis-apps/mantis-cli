@@ -1,55 +1,55 @@
 <div
-  class="flex items-center min-h-10 px-2 rounded hover:bg-gray-100 group w-full"
+  class="group flex min-h-10 w-full items-center rounded px-2 hover:bg-gray-100"
 >
   @if (isEditing) {
-  <div class="flex w-full">
-    <input
-      #todoInputRef
-      id="edit-todo-title-input"
-      class="ml-7 px-2 text-sm w-full"
-      [(ngModel)]="title"
-      (focus)="handleFocus()"
-      (blur)="handleBlur()"
-      (keyup.enter)="updateTodo()"
-    />
-    <label class="sr-only" htmlFor="edit-todo-title-input">
-      Edit todo title
-    </label>
-  </div>
-  } @else {
-  <label class="flex items-center" for="{{ 'task_' + todo._id }}">
-    <input
-      type="checkbox"
-      class="w-5 h-5 text-transparent border-2 border-gray-300 rounded-full appearance-none checked:bg-green-400 checked:border-green-400 checked:text-white',"
-      id="{{ 'task_' + todo._id }}"
-      [ngModel]="todo.completed"
-      (change)="toggleTodo()"
-    />
-    <span
-      [ngClass]="[
-        'mx-4 text-sm cursor-text',
-        todo.completed ? 'line-through text-gray-400' : 'text-gray-600'
-      ]"
-      (click)="startEdit()"
-    >
-      {{ todo.title }}
-    </span>
-  </label>
-  <button class="ml-auto hidden group-hover:block" (click)="removeTodo()">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth="{1.5}"
-      stroke="currentColor"
-      class="w-5 h-5 text-gray-400"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M6 18 18 6M6 6l12 12"
+    <div class="flex w-full">
+      <input
+        #todoInputRef
+        id="edit-todo-title-input"
+        class="ml-7 w-full px-2 text-sm"
+        [(ngModel)]="title"
+        (focus)="handleFocus()"
+        (blur)="handleBlur()"
+        (keyup.enter)="updateTodo()"
       />
-    </svg>
-  </button>
+      <label class="sr-only" htmlFor="edit-todo-title-input">
+        Edit todo title
+      </label>
+    </div>
+  } @else {
+    <label class="flex items-center" for="{{ 'task_' + todo._id }}">
+      <input
+        type="checkbox"
+        class="checked:text-white', h-5 w-5 appearance-none rounded-full border-2 border-gray-300 text-transparent checked:border-green-400 checked:bg-green-400"
+        id="{{ 'task_' + todo._id }}"
+        [ngModel]="todo.completed"
+        (change)="toggleTodo()"
+      />
+      <span
+        [ngClass]="[
+          'mx-4 cursor-text text-sm',
+          todo.completed ? 'text-gray-400 line-through' : 'text-gray-600'
+        ]"
+        (click)="startEdit()"
+      >
+        {{ todo.title }}
+      </span>
+    </label>
+    <button class="ml-auto hidden group-hover:block" (click)="removeTodo()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth="{1.5}"
+        stroke="currentColor"
+        class="h-5 w-5 text-gray-400"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M6 18 18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
   }
 </div>

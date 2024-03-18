@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { HomePage } from './home.page';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('HomePage', () => {
   let component: HomePage;
@@ -11,7 +12,11 @@ describe('HomePage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [HomePage],
-      imports: [IonicModule.forRoot(), RouterModule.forRoot([])],
+      imports: [
+        HttpClientModule,
+        IonicModule.forRoot(),
+        RouterModule.forRoot([]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomePage);

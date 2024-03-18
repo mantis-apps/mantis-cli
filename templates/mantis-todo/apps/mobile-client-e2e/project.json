@@ -19,10 +19,6 @@
           "devServerTarget": "mobile-client:serve-static"
         }
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": [],

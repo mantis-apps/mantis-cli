@@ -1,4 +1,5 @@
-/* eslint-disable */
+const esModules = ['@ionic', '@angular', '@stencil'].join('|');
+
 export default {
   displayName: 'mobile-client',
   preset: '../../jest.preset.js',
@@ -13,7 +14,10 @@ export default {
       },
     ],
   },
-  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
+  moduleNameMapper: {
+    environment: '<rootDir>/src/environments/environment.development',
+  },
+  transformIgnorePatterns: [`node_modules/(?!${esModules})`],
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',
     'jest-preset-angular/build/serializers/ng-snapshot',

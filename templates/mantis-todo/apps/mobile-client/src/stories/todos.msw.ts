@@ -20,16 +20,16 @@ export const defaultTodoHandlers = [
           title: 'Tell everyone about Mantis',
           completed: false,
         },
-      ] satisfies Todo[])
-    )
+      ] satisfies Todo[]),
+    ),
   ),
   rest.post('/todos', (req, res, ctx) =>
     res(
       ctx.json({
         _id: Date.now().toString(),
         ...req.json(),
-      })
-    )
+      }),
+    ),
   ),
   rest.patch('/todos/:id', (req, res, ctx) => res(ctx.json(req.json()))),
   rest.delete('/todos/:id', (req, res, ctx) => res(ctx.status(200))),

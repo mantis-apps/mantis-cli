@@ -23,8 +23,10 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nx/typescript"],
-      "rules": {}
+      "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@nx/typescript"
+      ]
     },
     {
       "files": ["*.js", "*.jsx"],
@@ -33,6 +35,7 @@
     },
     {
       "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
+      "extends": ["plugin:jest/recommended", "plugin:jest/style"],
       "env": {
         "jest": true
       },
