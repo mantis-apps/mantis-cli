@@ -1,8 +1,15 @@
-import { Preview, moduleMetadata } from '@storybook/angular';
+import {
+  Preview,
+  applicationConfig,
+  componentWrapperDecorator,
+  moduleMetadata,
+} from '@storybook/angular';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { ConfigService } from 'app/services/config.service';
 import projectConfig from '../project.json';
-import { Injectable } from '@angular/core';
+import { Injectable, importProvidersFrom } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { IonicModule } from '@ionic/angular';
 
 initialize();
 
@@ -31,6 +38,13 @@ const preview: Preview = {
         },
       ],
     }),
+    applicationConfig({
+      providers: [
+        provideHttpClient(),
+        importProvidersFrom(IonicModule.forRoot()),
+      ],
+    }),
+    componentWrapperDecorator((story) => `<ion-app>${story}</ion-app>`),
   ],
 };
 

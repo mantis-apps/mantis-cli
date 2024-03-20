@@ -220,7 +220,7 @@
     "test-storybook": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "test-storybook -c apps/mobile-client/.storybook --url=http://localhost:4400"
+        "command": "test-storybook -c apps/mobile-client/.storybook --url=http://localhost:5300"
       }
     },
     "static-storybook": {

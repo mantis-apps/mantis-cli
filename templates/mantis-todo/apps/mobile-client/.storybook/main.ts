@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/angular';
+import CopyPlugin from 'copy-webpack-plugin';
 
 const config: StorybookConfig = {
   stories: ['../src/app/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
@@ -7,6 +8,16 @@ const config: StorybookConfig = {
   framework: {
     name: '@storybook/angular',
     options: {},
+  },
+  webpackFinal: (config) => {
+    config.plugins?.push(
+      new CopyPlugin({
+        patterns: [
+          { from: './node_modules/ionicons/dist/ionicons/svg', to: './svg/' },
+        ],
+      }),
+    );
+    return config;
   },
 };
 
