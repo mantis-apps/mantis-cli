@@ -122,6 +122,7 @@ const copyTemplate = async ({
 }) => {
   const spinner = ora('Creating workspace').start();
   await fs.copy(template.path, workspace.path);
+  await renameGitignoreFiles(workspace.path);
   const envPath = path.join(workspace.path, 'apps/web-client/.env.local');
   await fs.ensureFile(envPath);
   await fs.appendFile(envPath, `\nMONGODB_URI='${dbUrl}'`);
@@ -131,6 +132,27 @@ const copyTemplate = async ({
     replaceStr: workspace.name,
   });
   spinner.succeed('Created workspace');
+};
+
+/**
+ * This is needed because npm can't publish .gitignore files
+ * https://github.com/npm/npm/issues/3763
+ */
+const renameGitignoreFiles = async (workspacePath: string) => {
+  const gitignoreFiles = await fs.readdir(workspacePath, {
+    withFileTypes: true,
+    recursive: true,
+  });
+  await Promise.all(
+    gitignoreFiles
+      .filter((entry) => entry.isFile() && entry.name === '_gitignore')
+      .map(async (entry) => {
+        await fs.rename(
+          path.join(entry.path, entry.name),
+          path.join(entry.path, '.gitignore'),
+        );
+      }),
+  );
 };
 
 // Needed until https://github.com/unjs/nypm/issues/115 is resolved
