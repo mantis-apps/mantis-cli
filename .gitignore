@@ -147,3 +147,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# release
+
+## This is modified in the release process so we don't wan to commit it during CD
+.npmrc

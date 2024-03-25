@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-import '../dist/mantis-app.mjs'
+import '../dist/mantis-app.mjs';

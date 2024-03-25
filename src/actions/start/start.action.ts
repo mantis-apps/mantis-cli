@@ -38,7 +38,7 @@ export default class StartAction extends Action {
 
     console.log(printWithBadge({ text: 'Hello World !' }));
 
-    const { workspace, workDir, createMobileApp } =
+    const { workspace, createMobileApp } =
       this.options && this.options.workspace
         ? this.options
         : await this.getWorkspaceInfo();
@@ -57,7 +57,7 @@ export default class StartAction extends Action {
       this.generateFeatureLibrary();
       this.moveContent(workspace);
       this.cleanupDirectories(workspace);
-      this.replaceHomePage(workspace);
+      this.replaceHomePage();
       this.updateImportPaths(workspace);
       // this.installConcurrentlyPackage();
       // await this.checkPorts();
@@ -178,7 +178,7 @@ export default class StartAction extends Action {
     removeFile('-rf', pathsToRemove);
   }
 
-  private replaceHomePage(workspace: string) {
+  private replaceHomePage() {
     const workspaceRoot = process.cwd();
     const featureLibPath = `${workspaceRoot}/libs/shared/home/feature/src/lib`;
 
@@ -242,9 +242,9 @@ export default class StartAction extends Action {
   }
 
   private async checkPorts() {
-    let webPort = Number(process.env.WebPort) || 4200;
-    let mobilePort = Number(process.env.MobilePort) || 4300;
-    let serverPort = Number(process.env.ServerPort) || 3000;
+    const webPort = Number(process.env.WebPort) || 4200;
+    const mobilePort = Number(process.env.MobilePort) || 4300;
+    const serverPort = Number(process.env.ServerPort) || 3000;
 
     const isWebPortAvailable = await checkPortAvailability({ port: webPort });
     const isMobilePortAvailable = this.createMobileApp

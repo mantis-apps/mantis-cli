@@ -12,8 +12,8 @@
     "esModuleInterop": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "types": ["node", "jest"]
+    "types": ["node"]
   },
-  "include": ["src/**/*"],
+  "include": ["**/*.ts", "**/*.js", "**/*.mjs", "**/*.cjs"],
   "exclude": ["node_modules", "e2e", "test", "dist", "**/*spec.ts", "templates"]
 }

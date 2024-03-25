@@ -3,5 +3,5 @@ blank_issues_enabled: false
 
 contact_links:
   - name: "\u2753 Discord Community of Mantis-CLI"
-    url: "https://discord.gg/Mantis-CLI"
-    about: "Please ask support questions or discuss suggestions/enhancements here."
+    url: 'https://discord.gg/Mantis-CLI'
+    about: 'Please ask support questions or discuss suggestions/enhancements here.'
