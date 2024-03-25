@@ -1,6 +1,6 @@
 {
   "name": "mantis-app",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": "FuturizeWorld",
   "license": "SEE LICENSE IN <LICENSE> FILE",
   "description": "M.A.N.T.I.S (MongoDB, Analog, Nx, Tailwind CSS, Ionic, Storybook) is not just a CLI tool; it's your passport to a seamless full-stack project launch.",
