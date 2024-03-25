@@ -12,23 +12,26 @@ Run `npm install` to install all of the dependencies.
 
 Run `npm run start:dev` to build and run the cli.
 
-To run a built cli, run `npx mantis <arguments>` e.g. `npx mantis init`.
+To run a built cli, run `npx mantis-app <arguments>` e.g. `npx mantis init`.
 
 ## Building
 
 Run `npm run build` to build the cli.
 
+## Linting
+
+Run `npm run lint <files>` to lint specified files.
+
+Run `npm run lint:all` to lint all of the files.
+
+## Formatting
+
+Run `npm run format <files>` to format specified files.
+
+Run `npm run format:all` to format all of the files.
+
 ## Commands
 
 ### `init`
 
-`npx mantis init`: Scaffolds a basic mantis application.
-
-**TEMPORARY**: DB setup
-
-In order for the generated project to work properly with a database, you'll need to put a `.env.local` file with database credentials at `templates/mantis-todo/apps/server/.env.local`. This will be automated in the future.
-
-```shell
-# Example
-MONGODB_URI='mongodb+srv://<user>:<password>@<cluster-name>.mongodb.net/?retryWrites=true&w=majority'
-```
+`npx mantis-app init`: Scaffolds a basic mantis application.

@@ -12,7 +12,7 @@ type chalkAnimationTypes =
   | 'karaoke';
 
 export function printWithMantisGradient(text: string) {
-  let mantisGradient = gradient(mantisGradientColors);
+  const mantisGradient = gradient(mantisGradientColors);
 
   return console.log(mantisGradient(text));
 }
