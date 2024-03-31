@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import fs from 'fs-extra';
 import path from 'path';
-import { PackageManagerName, detectPackageManager } from 'nypm';
+import { PackageManager, PackageManagerName, detectPackageManager } from 'nypm';
 import { fileURLToPath } from 'url';
 import { execa } from 'execa';
 import Enquirer from 'enquirer';
@@ -26,6 +26,7 @@ export default new Command('init')
     const workspacePath = path.join(process.cwd(), workspaceName);
 
     const dbUrl = await promptForDbUrl();
+
     await copyTemplate({
       template: { name: templateName, path: templatePath },
       workspace: { name: workspaceName, path: workspacePath },
@@ -163,14 +164,69 @@ const pmToInstallCommandMap: Record<PackageManagerName, [string, string[]]> = {
   pnpm: ['pnpm', ['install', '--frozen-lockfile']],
 };
 
+interface AutoDetectPMPromptResult {
+  autoDetectPM: boolean;
+}
+const promptForAutoDetectPackageManager = async () => {
+  const temp = await Enquirer.prompt<AutoDetectPMPromptResult>({
+    type: 'select',
+    name: 'autoDetectPM' satisfies keyof AutoDetectPMPromptResult,
+    message:
+      'Would you like to auto detect the package manager used to install the dependencies?',
+    choices: [
+      {
+        name: 'Yes',
+        value: true,
+      },
+      {
+        name: 'No',
+        value: false,
+      },
+    ],
+    // This is to workaround a bug
+    // https://github.com/enquirer/enquirer/issues/121
+    result(choice) {
+      return (this as any).map(choice)[choice];
+    },
+  });
+  return temp;
+};
+
+type PMTypePromptResult = Pick<PackageManager, 'name'>;
+const promptForPackageManagerSelect = async (): Promise<PMTypePromptResult> => {
+  const temp = await Enquirer.prompt<PMTypePromptResult>({
+    type: 'select',
+    name: 'name' satisfies keyof PMTypePromptResult,
+    message: "Select the package manager you'd like to use:",
+    choices: Object.keys(pmToInstallCommandMap),
+    // This is to workaround a bug
+    // https://github.com/enquirer/enquirer/issues/121
+    result(choice) {
+      return (this as any).map(choice)[choice];
+    },
+  });
+  return temp;
+};
+
+const getPackageManager = async (
+  workspacePath: string,
+): Promise<PackageManager | undefined> => {
+  const { autoDetectPM } = await promptForAutoDetectPackageManager();
+  if (autoDetectPM) {
+    return await detectPackageManager(workspacePath);
+  }
+  return (await promptForPackageManagerSelect()) as PackageManager;
+};
+
 const installDependenciesWithMessage = async (workspacePath: string) => {
-  const spinner = ora('Installing dependencies').start();
-  const pm = await detectPackageManager(workspacePath);
+  const pm = await getPackageManager(workspacePath);
   if (!pm) {
     throw new Error(
       'No package manager found in the workspace. Unable to install dependencies.',
     );
   }
+
+  const spinner = ora('Installing dependencies').start();
   const [command, args] = pmToInstallCommandMap[pm.name];
   await execa(command, args, {
     cwd: workspacePath,
