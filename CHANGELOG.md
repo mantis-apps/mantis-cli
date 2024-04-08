@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.4.3](https://github.com/mantis-apps/mantis-cli/compare/0.4.2...0.4.3) (2024-04-08)
+
 # 0.4.0 (2024-04-08)
 
 
