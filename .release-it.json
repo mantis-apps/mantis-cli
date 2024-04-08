@@ -11,7 +11,8 @@
   },
   "plugins": {
     "@release-it/conventional-changelog": {
-      "infile": false,
+      "infile": "CHANGELOG.md",
+      "header": "# Changelog",
       "preset": {
         "name": "angular"
       }
