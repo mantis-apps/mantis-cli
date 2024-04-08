@@ -35,6 +35,7 @@
   "scripts": {
     "start:dev": "npm run build && node dist/mantis-app.mjs",
     "build": "unbuild",
+    "type-check": "tsc --pretty --noEmit",
     "format": "prettier --write",
     "format:all": "npm run format -- .",
     "lint": "eslint --fix",
