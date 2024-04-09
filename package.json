@@ -1,6 +1,6 @@
 {
   "name": "mantis-app",
-  "version": "0.0.7",
+  "version": "0.6.0",
   "author": "FuturizeWorld",
   "license": "SEE LICENSE IN <LICENSE> FILE",
   "description": "M.A.N.T.I.S (MongoDB, Analog, Nx, Tailwind CSS, Ionic, Storybook) is not just a CLI tool; it's your passport to a seamless full-stack project launch.",
@@ -21,9 +21,6 @@
   "bugs": {
     "url": "https://github.com/mantis-apps/mantis-cli/issues"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "engines": {
     "node": ">= 18"
   },
@@ -38,19 +35,15 @@
   "scripts": {
     "start:dev": "npm run build && node dist/mantis-app.mjs",
     "build": "unbuild",
-    "format": "prettier --write \"**/*.ts\"",
-    "lint": "eslint '{lib,commands,actions}/**/*.ts' --fix",
+    "type-check": "tsc --pretty --noEmit",
+    "format": "prettier --write",
+    "format:all": "npm run format -- .",
+    "lint": "eslint --fix",
+    "lint:all": "npm run lint -- .",
     "start": "node dist/mantis.mjs",
-    "prepack": "npm run build",
-    "prepublish:next": "npm run build",
-    "publish:next": "npm publish --access public --tag next",
-    "prepublish:npm": "npm run build",
-    "publish:npm": "npm publish --access public",
-    "test": "jest --config test/jest-config.json",
-    "test:dev": "npm run clean && jest --config test/jest-config.json --watchAll",
-    "prerelease": "npm run build",
+    "prepublishOnly": "npm run build",
     "release": "release-it",
-    "prepare": "husky install",
+    "prepare": "husky",
     "install:locally": "npm run build && npm install -g ."
   },
   "dependencies": {
@@ -79,21 +72,26 @@
   "devDependencies": {
     "@commitlint/cli": "18.4.3",
     "@commitlint/config-angular": "18.4.3",
+    "@release-it/conventional-changelog": "^8.0.1",
     "@types/chalk-animation": "^1.6.3",
     "@types/figlet": "^1.5.8",
     "@types/fs-extra": "^11.0.4",
     "@types/gradient-string": "^1.1.5",
     "@types/inquirer": "^9.0.7",
-    "@types/jest": "^29.5.9",
     "@types/node": "^20.9.4",
     "@types/node-emoji": "^2.1.0",
     "@types/portscanner": "^2.1.4",
     "@types/shelljs": "^0.8.15",
     "@types/spinnies": "^0.5.3",
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
+    "@typescript-eslint/parser": "^7.3.1",
+    "commitizen": "^4.3.0",
     "cross-env": "^7.0.3",
-    "husky": "^8.0.3",
-    "jest": "^29.7.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.57.0",
+    "husky": "^9.0.11",
     "lint-staged": "^15.1.0",
+    "prettier": "^3.2.5",
     "release-it": "^17.0.0",
     "rimraf": "^5.0.5",
     "tslib": "^2.6.2",

@@ -1,0 +1,5 @@
+{
+  "*.@(ts|tsx|js|jsx)": ["npm run lint", "npm run format"],
+  "*.json": ["npm run format"],
+  "*.*rc": ["npm run format -- --parser json"]
+}
