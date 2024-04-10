@@ -1,5 +1,12 @@
 # Changelog
 
+# [0.6.0](https://github.com/mantis-apps/mantis-cli/compare/0.4.3...0.6.0) (2024-04-10)
+
+
+### Features
+
+* **templates:** use analog v1 for mantis-todo ([a3341af](https://github.com/mantis-apps/mantis-cli/commit/a3341af9b082fbff48a24250551b29ee8c62f61d))
+
 ## [0.4.3](https://github.com/mantis-apps/mantis-cli/compare/0.4.2...0.4.3) (2024-04-08)
 
 # 0.4.0 (2024-04-08)
