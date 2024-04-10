@@ -44,7 +44,7 @@ To run all of the e2e tests, run `npx nx run-many --all --target=e2e`.
 
 ## Linting
 
-To lint all projects, run `npx nx run-many --all --target=lint`.
+To lint all projects, run `npx nx run-many --all --target=lint --verbose`.
 
 ## Format
 

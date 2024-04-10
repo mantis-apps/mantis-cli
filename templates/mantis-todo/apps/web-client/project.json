@@ -15,7 +15,7 @@
       "options": {
         "main": "apps/web-client/src/main.ts",
         "configFile": "apps/web-client/vite.config.ts",
-        "outputPath": "apps/dist/web-client/client",
+        "outputPath": "dist/apps/web-client/client",
         "tsConfig": "apps/web-client/tsconfig.app.json"
       },
       "defaultConfiguration": "production",

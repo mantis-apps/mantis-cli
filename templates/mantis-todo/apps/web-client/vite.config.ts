@@ -15,6 +15,11 @@ export default defineConfig(({ mode }) => {
       commonjsOptions: { transformMixedEsModules: true },
       target: ['es2020'],
     },
+    server: {
+      fs: {
+        allow: ['.'],
+      },
+    },
     plugins: [analog(), nxViteTsPaths(), splitVendorChunkPlugin()],
     test: {
       globals: true,
