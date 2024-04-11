@@ -1,5 +1,18 @@
 # Changelog
 
+# [0.7.0](https://github.com/mantis-apps/mantis-cli/compare/0.6.0...0.7.0) (2024-04-11)
+
+
+### Features
+
+* **init.command.ts:** add support for user selected pm ([a02161a](https://github.com/mantis-apps/mantis-cli/commit/a02161ad78ca8e613f8eb775ebb287b5fdda5715)), closes [#32](https://github.com/mantis-apps/mantis-cli/issues/32)
+* **init.command.ts:** change package manager selection/install logic ([fa12a83](https://github.com/mantis-apps/mantis-cli/commit/fa12a834aa038b4bc90dc0e068539ccd0fed7850))
+* **init.command.ts:** Remove unnecessary guard clause w/ pm selection ([b9881bd](https://github.com/mantis-apps/mantis-cli/commit/b9881bd76d810d27d37ca4ff2b9f24a66430b4dd)), closes [#32](https://github.com/mantis-apps/mantis-cli/issues/32)
+* **init.command.ts:** replace ci command with install ([786638e](https://github.com/mantis-apps/mantis-cli/commit/786638edd107eff5763d2170e60e04878d716f1f))
+* **init.command.ts:** Use installDependencies in favor of execa ([e1a329b](https://github.com/mantis-apps/mantis-cli/commit/e1a329b7436eb087331a461aa8014e5d341dad33)), closes [#32](https://github.com/mantis-apps/mantis-cli/issues/32)
+* remove lock file from template ([c78e232](https://github.com/mantis-apps/mantis-cli/commit/c78e232053fc45b1d4a59ced8785c57e6df93dac))
+* **templates/*:** add packages to pacakge.json in template ([af83cc6](https://github.com/mantis-apps/mantis-cli/commit/af83cc604c003f9ba97e4505d0eea0c2773e5294))
+
 # [0.6.0](https://github.com/mantis-apps/mantis-cli/compare/0.4.3...0.6.0) (2024-04-10)
 
 
