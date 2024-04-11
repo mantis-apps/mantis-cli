@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { IonicModule } from '@ionic/angular';
@@ -18,7 +18,7 @@ export class TodoModalComponent implements OnInit {
     return !!this.todo;
   }
 
-  constructor(private modalCtrl: ModalController) {}
+  private modalCtrl = inject(ModalController);
 
   ngOnInit() {
     this.title = this.todo?.title ?? '';

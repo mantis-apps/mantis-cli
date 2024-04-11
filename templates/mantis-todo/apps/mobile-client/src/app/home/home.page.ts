@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IonRefresherCustomEvent, RefresherEventDetail } from '@ionic/core';
 import { Todo, TodosService } from 'app/services/todos.service';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { ModalController } from '@ionic/angular';
 import { TodoModalComponent } from '../components/todo-modal/todo-modal.component';
 
@@ -10,30 +10,21 @@ import { TodoModalComponent } from '../components/todo-modal/todo-modal.componen
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
-  todos$ = new BehaviorSubject<Todo[]>([]);
-
-  constructor(
-    private todosService: TodosService,
-    private modalCtrl: ModalController,
-  ) {}
-
-  ngOnInit(): void {
-    this.loadTodos();
-  }
-
-  loadTodos(): void {
-    this.todosService
-      .getAllTodos()
-      .subscribe((todos) => this.todos$.next(todos));
-  }
+export class HomePage {
+  private todosService = inject(TodosService);
+  private modalCtrl = inject(ModalController);
+  readonly todos$ = this.todosService.todos$;
 
   removeTodo(todo: Todo): void {
-    this.todosService.removeTodo(todo).subscribe(() => this.loadTodos());
+    this.todosService.removeTodo(todo);
   }
 
   updateTodo(todo: Todo): void {
-    this.todosService.updateTodo(todo).subscribe(() => this.loadTodos());
+    this.todosService.updateTodo(todo);
+  }
+
+  addTodo(todo: Todo) {
+    this.todosService.addTodo(todo);
   }
 
   async openAddTodoModal() {
@@ -65,22 +56,17 @@ export class HomePage implements OnInit {
     }
   }
 
-  addTodo(todo: Todo): void {
-    this.todosService.addTodo(todo).subscribe(() => this.loadTodos());
-  }
-
   private refreshing = false;
 
   async refresh(ev: IonRefresherCustomEvent<RefresherEventDetail>) {
     if (this.refreshing) return;
     this.refreshing = true;
+    this.todosService.refreshTodos();
 
-    const todosPromise = firstValueFrom(this.todosService.getAllTodos());
+    await Promise.all([firstValueFrom(this.todos$), delay(200)]);
 
-    const [todos] = await Promise.all([todosPromise, delay(200)]);
     ev.detail.complete();
 
-    this.todos$.next(todos);
     this.refreshing = false;
   }
 }

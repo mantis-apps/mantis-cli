@@ -2,4 +2,3 @@ dist
 logs
 node_modules
 .nx
-templates
