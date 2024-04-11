@@ -174,12 +174,6 @@ const promptForPackageManagerSelect = async (): Promise<PMTypePromptResult> => {
 
 const installDependenciesWithMessage = async (workspacePath: string) => {
   const pm = await promptForPackageManagerSelect();
-  if (!pm) {
-    throw new Error(
-      'No package manager found in the workspace. Unable to install dependencies.',
-    );
-  }
-
   const spinner = ora('Installing dependencies').start();
   await installDependencies({
     packageManager: pm.name,
