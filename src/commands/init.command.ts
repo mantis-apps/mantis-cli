@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import fs from 'fs-extra';
 import path from 'path';
-import { PackageManagerName, detectPackageManager } from 'nypm';
+import { PackageManager, PackageManagerName, installDependencies } from 'nypm';
 import { fileURLToPath } from 'url';
 import { execa } from 'execa';
 import Enquirer from 'enquirer';
@@ -26,6 +26,7 @@ export default new Command('init')
     const workspacePath = path.join(process.cwd(), workspaceName);
 
     const dbUrl = await promptForDbUrl();
+
     await copyTemplate({
       template: { name: templateName, path: templatePath },
       workspace: { name: workspaceName, path: workspacePath },
@@ -155,27 +156,29 @@ const renameGitignoreFiles = async (workspacePath: string) => {
   );
 };
 
-// Needed until https://github.com/unjs/nypm/issues/115 is resolved
-const pmToInstallCommandMap: Record<PackageManagerName, [string, string[]]> = {
-  npm: ['npm', ['ci']],
-  yarn: ['yarn', ['install', '--frozen-lockfile']],
-  bun: ['bun', ['install', '--frozen-lockfile']],
-  pnpm: ['pnpm', ['install', '--frozen-lockfile']],
+type PMTypePromptResult = Pick<PackageManager, 'name'>;
+const promptForPackageManagerSelect = async (): Promise<PMTypePromptResult> => {
+  const temp = await Enquirer.prompt<PMTypePromptResult>({
+    type: 'select',
+    name: 'name' satisfies keyof PMTypePromptResult,
+    message: "Select the package manager you'd like to use:",
+    choices: ['npm', 'bun', 'pnpm', 'yarn'] satisfies PackageManagerName[],
+    // This is to workaround a bug
+    // https://github.com/enquirer/enquirer/issues/121
+    result(choice) {
+      return (this as any).map(choice)[choice];
+    },
+  });
+  return temp;
 };
 
 const installDependenciesWithMessage = async (workspacePath: string) => {
+  const pm = await promptForPackageManagerSelect();
   const spinner = ora('Installing dependencies').start();
-  const pm = await detectPackageManager(workspacePath);
-  if (!pm) {
-    throw new Error(
-      'No package manager found in the workspace. Unable to install dependencies.',
-    );
-  }
-  const [command, args] = pmToInstallCommandMap[pm.name];
-  await execa(command, args, {
+  await installDependencies({
+    packageManager: pm.name,
     cwd: workspacePath,
-    /* Ignore output */
-    stdio: 'pipe',
+    silent: true,
   });
   spinner.succeed('Installed dependencies');
 };
