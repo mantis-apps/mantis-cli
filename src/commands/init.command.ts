@@ -158,7 +158,7 @@ const renameGitignoreFiles = async (workspacePath: string) => {
 
 // Needed until https://github.com/unjs/nypm/issues/115 is resolved
 const pmToInstallCommandMap: Record<PackageManagerName, [string, string[]]> = {
-  npm: ['npm', ['ci']],
+  npm: ['npm', ['install']],
   yarn: ['yarn', ['install']],
   bun: ['bun', ['install']],
   pnpm: ['pnpm', ['install']],
