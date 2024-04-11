@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import fs from 'fs-extra';
 import path from 'path';
-import { PackageManager, PackageManagerName } from 'nypm';
+import { PackageManager, PackageManagerName, installDependencies } from 'nypm';
 import { fileURLToPath } from 'url';
 import { execa } from 'execa';
 import Enquirer from 'enquirer';
@@ -156,21 +156,13 @@ const renameGitignoreFiles = async (workspacePath: string) => {
   );
 };
 
-// Needed until https://github.com/unjs/nypm/issues/115 is resolved
-const pmToInstallCommandMap: Record<PackageManagerName, [string, string[]]> = {
-  npm: ['npm', ['install']],
-  yarn: ['yarn', ['install']],
-  bun: ['bun', ['install']],
-  pnpm: ['pnpm', ['install']],
-};
-
 type PMTypePromptResult = Pick<PackageManager, 'name'>;
 const promptForPackageManagerSelect = async (): Promise<PMTypePromptResult> => {
   const temp = await Enquirer.prompt<PMTypePromptResult>({
     type: 'select',
     name: 'name' satisfies keyof PMTypePromptResult,
     message: "Select the package manager you'd like to use:",
-    choices: Object.keys(pmToInstallCommandMap),
+    choices: ['npm', 'bun', 'pnpm', 'yarn'] satisfies PackageManagerName[],
     // This is to workaround a bug
     // https://github.com/enquirer/enquirer/issues/121
     result(choice) {
@@ -189,11 +181,10 @@ const installDependenciesWithMessage = async (workspacePath: string) => {
   }
 
   const spinner = ora('Installing dependencies').start();
-  const [command, args] = pmToInstallCommandMap[pm.name];
-  await execa(command, args, {
+  await installDependencies({
+    packageManager: pm.name,
     cwd: workspacePath,
-    /* Ignore output */
-    stdio: 'pipe',
+    silent: true,
   });
   spinner.succeed('Installed dependencies');
 };
