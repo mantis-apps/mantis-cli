@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import fs from 'fs-extra';
 import path from 'path';
-import { PackageManager, PackageManagerName, detectPackageManager } from 'nypm';
+import { PackageManager, PackageManagerName } from 'nypm';
 import { fileURLToPath } from 'url';
 import { execa } from 'execa';
 import Enquirer from 'enquirer';
@@ -159,37 +159,9 @@ const renameGitignoreFiles = async (workspacePath: string) => {
 // Needed until https://github.com/unjs/nypm/issues/115 is resolved
 const pmToInstallCommandMap: Record<PackageManagerName, [string, string[]]> = {
   npm: ['npm', ['ci']],
-  yarn: ['yarn', ['install', '--frozen-lockfile']],
-  bun: ['bun', ['install', '--frozen-lockfile']],
-  pnpm: ['pnpm', ['install', '--frozen-lockfile']],
-};
-
-interface AutoDetectPMPromptResult {
-  autoDetectPM: boolean;
-}
-const promptForAutoDetectPackageManager = async () => {
-  const temp = await Enquirer.prompt<AutoDetectPMPromptResult>({
-    type: 'select',
-    name: 'autoDetectPM' satisfies keyof AutoDetectPMPromptResult,
-    message:
-      'Would you like to auto detect the package manager used to install the dependencies?',
-    choices: [
-      {
-        name: 'Yes',
-        value: true,
-      },
-      {
-        name: 'No',
-        value: false,
-      },
-    ],
-    // This is to workaround a bug
-    // https://github.com/enquirer/enquirer/issues/121
-    result(choice) {
-      return (this as any).map(choice)[choice];
-    },
-  });
-  return temp;
+  yarn: ['yarn', ['install']],
+  bun: ['bun', ['install']],
+  pnpm: ['pnpm', ['install']],
 };
 
 type PMTypePromptResult = Pick<PackageManager, 'name'>;
@@ -208,18 +180,8 @@ const promptForPackageManagerSelect = async (): Promise<PMTypePromptResult> => {
   return temp;
 };
 
-const getPackageManager = async (
-  workspacePath: string,
-): Promise<PackageManager | undefined> => {
-  const { autoDetectPM } = await promptForAutoDetectPackageManager();
-  if (autoDetectPM) {
-    return await detectPackageManager(workspacePath);
-  }
-  return (await promptForPackageManagerSelect()) as PackageManager;
-};
-
 const installDependenciesWithMessage = async (workspacePath: string) => {
-  const pm = await getPackageManager(workspacePath);
+  const pm = await promptForPackageManagerSelect();
   if (!pm) {
     throw new Error(
       'No package manager found in the workspace. Unable to install dependencies.',
