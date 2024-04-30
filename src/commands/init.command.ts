@@ -25,7 +25,7 @@ export default new Command('init')
     });
     const workspacePath = path.join(process.cwd(), workspaceName);
 
-    const dbUrl = await promptForDbUrl();
+    const { isLocal, dbUrl } = await promptForDbUrl();
 
     await copyTemplate({
       template: { name: templateName, path: templatePath },
@@ -33,7 +33,9 @@ export default new Command('init')
       secrets: { dbUrl },
     });
     await installDependenciesWithMessage(workspacePath);
-    await startApplications(workspacePath);
+    await startApplications(workspacePath, {
+      startLocalDb: isLocal,
+    });
   });
 
 const promptForWorkspaceName = async ({
@@ -63,7 +65,10 @@ const promptForWorkspaceName = async ({
   return workspaceName;
 };
 
-const promptForDbUrl = async () => {
+const promptForDbUrl = async (): Promise<{
+  dbUrl: string;
+  isLocal: boolean;
+}> => {
   interface DbTypePromptResult {
     dbType: string;
   }
@@ -88,7 +93,7 @@ const promptForDbUrl = async () => {
     },
   });
   if (dbType === 'local') {
-    return 'local';
+    return { isLocal: true, dbUrl: 'mongodb://127.0.0.1:27017' };
   }
   interface DbUrlPromptResult {
     dbUrl: string;
@@ -109,7 +114,7 @@ const promptForDbUrl = async () => {
       },
     },
   ]);
-  return dbUrl;
+  return { isLocal: false, dbUrl };
 };
 
 const copyTemplate = async ({
@@ -183,7 +188,10 @@ const installDependenciesWithMessage = async (workspacePath: string) => {
   spinner.succeed('Installed dependencies');
 };
 
-const startApplications = async (workspacePath: string) => {
+const startApplications = async (
+  workspacePath: string,
+  { startLocalDb }: { startLocalDb: boolean },
+) => {
   console.log(`${logSymbols.info} Starting applications...`);
   try {
     await execa(
@@ -191,7 +199,7 @@ const startApplications = async (workspacePath: string) => {
       [
         'nx',
         'run-many',
-        '--target=serve',
+        startLocalDb ? '--targets=serve,start-local-db' : '--target=serve',
         '--projects=web-client,mobile-client',
       ],
       { cwd: workspacePath, stdio: 'inherit' },

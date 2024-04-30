@@ -64,6 +64,12 @@
         "staticFilePath": "dist/apps/web-client/browser"
       }
     },
+    "start-local-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node {projectRoot}/scripts/startLocalDb.js"
+      }
+    },
     "storybook": {
       "executor": "@storybook/angular:start-storybook",
       "options": {
