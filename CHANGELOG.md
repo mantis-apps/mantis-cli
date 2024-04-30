@@ -1,5 +1,12 @@
 # Changelog
 
+# [0.8.0](https://github.com/mantis-apps/mantis-cli/compare/0.7.0...0.8.0) (2024-04-30)
+
+
+### Features
+
+* allow deployment on netlify ([1fea301](https://github.com/mantis-apps/mantis-cli/commit/1fea3015b20ee8fa79fcf98932eeacd38b232081))
+
 # [0.7.0](https://github.com/mantis-apps/mantis-cli/compare/0.6.0...0.7.0) (2024-04-11)
 
 
