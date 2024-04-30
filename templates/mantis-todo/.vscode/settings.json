@@ -1,5 +1,9 @@
 {
   "typescript.preferences.autoImportFileExcludePatterns": [
     "@ionic/angular/common"
-  ]
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
