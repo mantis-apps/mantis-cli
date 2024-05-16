@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.1](https://github.com/mantis-apps/mantis-cli/compare/0.8.0...0.8.1) (2024-05-16)
+
+
+### Bug Fixes
+
+* hardcode nx version to 18.2.4 ([ad71fce](https://github.com/mantis-apps/mantis-cli/commit/ad71fcec35af474268109f90e701fc7c7c69d233))
+
 # [0.8.0](https://github.com/mantis-apps/mantis-cli/compare/0.7.0...0.8.0) (2024-04-30)
 
 
