@@ -67,7 +67,8 @@
     "portscanner": "^2.2.0",
     "shelljs": "^0.8.5",
     "spinnies": "^0.5.1",
-    "tree-kill": "^1.2.2"
+    "tree-kill": "^1.2.2",
+    "inquirer": "^9.2.22"
   },
   "devDependencies": {
     "@commitlint/cli": "18.4.3",
