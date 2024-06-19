@@ -4,6 +4,7 @@ import { welcome } from './utils/welcome.helper';
 import packageJson from '../package.json';
 import initCommand from './commands/init.command';
 import startCommand from './commands/start.command';
+import generateCommand from './commands/generate.command';
 
 const logger = new OrbitLogger('[BOOTSTRAP]');
 
@@ -33,6 +34,7 @@ const bootstrap = async () => {
 
     program.addCommand(initCommand);
     program.addCommand(startCommand);
+    program.addCommand(generateCommand);
 
     await program.parseAsync(process.argv);
 
