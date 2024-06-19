@@ -2,9 +2,7 @@ import { Command } from 'commander';
 import StartAction from '../actions/start/start.action';
 
 export default new Command('start')
-  .description('Description of someCommand')
-  .option('-w, --workspace <name>', 'Specify the name of the workspace')
-  .option('--createMobileApp', 'Create a Mobile App')
+  .description('Start the Mantis project')
   .action(async () => {
-    await new StartAction({ workspace: '' }).execute();
+    await new StartAction().execute();
   });

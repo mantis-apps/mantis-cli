@@ -1,3 +1,4 @@
+import { verifyMantisProject } from './../../../../mantis-cli/src/utils/verify-mantis-project';
 import { OrbitLogger } from '../utils/orbitLogger.helper';
 
 /**
@@ -7,8 +8,16 @@ import { OrbitLogger } from '../utils/orbitLogger.helper';
 export abstract class Action {
   protected logger: OrbitLogger;
 
-  constructor(loggerContext: string) {
+  constructor(
+    loggerContext: string,
+    options: { checkMantisProject: boolean } = {
+      checkMantisProject: true,
+    },
+  ) {
     this.logger = new OrbitLogger(loggerContext);
+    if (options?.checkMantisProject) {
+      verifyMantisProject();
+    }
   }
 
   /**

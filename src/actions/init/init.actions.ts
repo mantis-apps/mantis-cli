@@ -16,7 +16,7 @@ export default class InitAction extends Action {
   private options: InitActionOptions;
 
   constructor(options: InitActionOptions) {
-    super('[INIT-ACTION]');
+    super('[INIT-ACTION]', { checkMantisProject: false });
     this.options = options;
   }
 
