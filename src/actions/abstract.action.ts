@@ -1,4 +1,4 @@
-import { verifyMantisProject } from './../../../../mantis-cli/src/utils/verify-mantis-project';
+import { verifyMantisProject } from '../utils/verify-mantis-project';
 import { OrbitLogger } from '../utils/orbitLogger.helper';
 
 /**
