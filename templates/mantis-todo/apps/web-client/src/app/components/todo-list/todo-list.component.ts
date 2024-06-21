@@ -1,4 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  HostBinding,
+  OnInit,
+} from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { TodosService, Todo, CreateTodo } from '../../services/todos.service';
 import { TodoItemComponent } from '../todo-item/todo-item.component';
@@ -10,13 +15,10 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [TodoItemComponent, AddTodoComponent, CommonModule],
   templateUrl: './todo-list.component.html',
-  styles: `
-    :host {
-      width: 100%;
-    }
-  `,
 })
 export class TodoListComponent implements OnInit {
+  @HostBinding('class')
+  readonly hostClass = 'w-full';
   todos$ = new BehaviorSubject<Todo[]>([]);
 
   constructor(
