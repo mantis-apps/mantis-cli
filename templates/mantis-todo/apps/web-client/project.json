@@ -1,6 +1,6 @@
 {
   "name": "web-client",
-  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/web-client/src",
   "targets": {
@@ -103,7 +103,7 @@
     "test-storybook": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "test-storybook -c apps/web-client/.storybook --url=http://localhost:4400"
+        "command": "test-storybook -c apps/web-client/.storybook --url=http://localhost:5200"
       }
     },
     "static-storybook": {

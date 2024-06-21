@@ -110,4 +110,4 @@ We recommend the following extensions:
 - [Angular Language Service](https://marketplace.visualstudio.com/items?itemName=Angular.ng-template): Provides a rich editing experience for Angular templates, both inline and external templates.
 - [Eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint): Integrates [ESLint](https://eslint.org/) into VS Code.
 - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): Integrates [Prettier](https://prettier.io/) into VS Code.
-- [Jest Runner](https://marketplace.visualstudio.com/items?itemName=firsttris.vscode-jest-runner): Makes it easy to debug Jest tests within VS Code.
+- [Vitest](https://marketplace.visualstudio.com/items?itemName=vitest.explorer): Makes it easy to debug Vitest tests within VS Code.

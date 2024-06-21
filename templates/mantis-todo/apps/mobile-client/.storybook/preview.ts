@@ -5,7 +5,7 @@ import {
   moduleMetadata,
 } from '@storybook/angular';
 import { initialize, mswLoader } from 'msw-storybook-addon';
-import { ConfigService } from 'app/services/config.service';
+import { ConfigService } from '../src/app/services/config.service';
 import projectConfig from '../project.json';
 import { Injectable, importProvidersFrom } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';

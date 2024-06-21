@@ -6,9 +6,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Todo } from 'app/services/todos.service';
+import { Todo } from '../../services/todos.service';
 import { CommonModule } from '@angular/common';
 import { IonicModule, IonItemSliding } from '@ionic/angular';
+import { pencilOutline, trashOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
+
+addIcons({ pencilOutline, trashOutline });
 
 @Component({
   selector: 'app-todo-item',
