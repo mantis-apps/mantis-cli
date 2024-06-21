@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/mantis-apps/mantis-cli/compare/0.9.0...0.9.1) (2024-06-21)
+
+
+### Bug Fixes
+
+* **pnpm:** support what pnpm resolves after install ([ff76c5a](https://github.com/mantis-apps/mantis-cli/commit/ff76c5a81271da151deaa9926ad52b26f4e0f907))
+
 # [0.9.0](https://github.com/mantis-apps/mantis-cli/compare/0.8.1...0.9.0) (2024-06-21)
 
 
