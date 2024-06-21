@@ -1,9 +1,7 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "es2022",
-    "baseUrl": "src",
-    "useDefineForClassFields": false,
-    "esModuleInterop": true,
+    "target": "es2020",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
@@ -13,6 +11,7 @@
   },
   "files": [],
   "include": [],
+  "exclude": [],
   "references": [
     {
       "path": "./tsconfig.app.json"
@@ -27,7 +26,6 @@
       "path": "./.storybook/tsconfig.json"
     }
   ],
-  "extends": "../../tsconfig.base.json",
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

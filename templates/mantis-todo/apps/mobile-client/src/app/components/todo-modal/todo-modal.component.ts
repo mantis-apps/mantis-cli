@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { IonicModule } from '@ionic/angular';
-import { CreateTodo, Todo } from 'app/services/todos.service';
+import { CreateTodo, Todo } from '../../services/todos.service';
 
 @Component({
   selector: 'app-todo-modal',

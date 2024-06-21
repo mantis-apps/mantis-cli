@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { Todo } from 'app/services/todos.service';
+import { Todo } from '../services/todos.service';
 
 export const defaultTodoHandlers = [
   rest.get('/todos', (_, res, ctx) =>

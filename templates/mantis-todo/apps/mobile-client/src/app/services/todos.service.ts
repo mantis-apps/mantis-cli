@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError, of, retry } from 'rxjs';
 import { ConfigService } from './config.service';
 
 export interface Todo {
@@ -19,7 +19,12 @@ export class TodosService {
   ) {}
 
   getAllTodos(): Observable<Todo[]> {
-    return this.http.get<Todo[]>(`${this.config.getBackendBaseUrl()}/todos`);
+    return this.http
+      .get<Todo[]>(`${this.config.getBackendBaseUrl()}/todos`)
+      .pipe(
+        retry(3),
+        catchError(() => of([])),
+      );
   }
 
   addTodo(todo: CreateTodo): Observable<Todo> {

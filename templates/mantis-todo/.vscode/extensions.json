@@ -2,9 +2,9 @@
   "recommendations": [
     "nrwl.angular-console",
     "esbenp.prettier-vscode",
-    "firsttris.vscode-jest-runner",
     "dbaeumer.vscode-eslint",
     "angular.ng-template",
-    "ionic.ionic"
+    "ionic.ionic",
+    "vitest.explorer"
   ]
 }

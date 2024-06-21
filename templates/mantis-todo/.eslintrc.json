@@ -35,10 +35,7 @@
     },
     {
       "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
-      "extends": ["plugin:jest/recommended", "plugin:jest/style"],
-      "env": {
-        "jest": true
-      },
+      "extends": ["plugin:vitest/recommended"],
       "rules": {}
     }
   ]

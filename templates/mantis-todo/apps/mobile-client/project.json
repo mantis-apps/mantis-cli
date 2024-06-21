@@ -2,94 +2,60 @@
   "name": "mobile-client",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "prefix": "app",
   "sourceRoot": "apps/mobile-client/src",
-  "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@analogjs/platform:vite",
+      "outputs": [
+        "{options.outputPath}",
+        "{workspaceRoot}/dist/apps/mobile-client/.nitro",
+        "{workspaceRoot}/dist/apps/mobile-client/ssr",
+        "{workspaceRoot}/dist/apps/mobile-client/analog"
+      ],
       "options": {
-        "outputPath": "dist/apps/mobile-client",
-        "index": "apps/mobile-client/src/index.html",
         "main": "apps/mobile-client/src/main.ts",
-        "polyfills": ["zone.js"],
-        "tsConfig": "apps/mobile-client/tsconfig.app.json",
-        "inlineStyleLanguage": "scss",
-        "assets": [
-          "apps/mobile-client/src/assets",
-          {
-            "glob": "**/*.svg",
-            "input": "node_modules/ionicons/dist/ionicons/svg",
-            "output": "./svg"
-          }
-        ],
-        "styles": [
-          "apps/mobile-client/src/styles.scss",
-          {
-            "input": "apps/mobile-client/src/theme/variables.scss"
-          }
-        ],
-        "scripts": []
+        "configFile": "apps/mobile-client/vite.config.ts",
+        "outputPath": "dist/apps/mobile-client/client",
+        "tsConfig": "apps/mobile-client/tsconfig.app.json"
       },
+      "defaultConfiguration": "production",
       "configurations": {
-        "production": {
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "4kb"
-            }
-          ],
-          "outputHashing": "all"
-        },
         "development": {
-          "optimization": false,
-          "extractLicenses": false,
-          "sourceMap": true,
-          "fileReplacements": [
-            {
-              "replace": "apps/mobile-client/src/environments/environment.ts",
-              "with": "apps/mobile-client/src/environments/environment.development.ts"
-            }
-          ]
+          "mode": "development"
+        },
+        "production": {
+          "sourcemap": false,
+          "mode": "production"
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@analogjs/platform:vite-dev-server",
+      "defaultConfiguration": "development",
       "options": {
+        "buildTarget": "mobile-client:build",
+        "port": 4300,
         "open": true
       },
       "configurations": {
+        "development": {
+          "buildTarget": "mobile-client:build:development",
+          "hmr": true
+        },
         "production": {
           "buildTarget": "mobile-client:build:production"
-        },
-        "development": {
-          "port": 4300,
-          "buildTarget": "mobile-client:build:development"
         }
-      },
-      "defaultConfiguration": "development"
+      }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "buildTarget": "mobile-client:build"
+        "browserTarget": "mobile-client:build"
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "apps/mobile-client/jest.config.ts"
-      }
+      "executor": "@analogjs/platform:vitest",
+      "outputs": ["{projectRoot}/coverage"]
     },
     "serve-static": {
       "executor": "@nx/web:file-server",
@@ -194,7 +160,8 @@
         "port": 5300,
         "configDir": "apps/mobile-client/.storybook",
         "browserTarget": "mobile-client:build",
-        "compodoc": false
+        "compodoc": false,
+        "styles": ["apps/mobile-client/src/styles.scss"]
       },
       "configurations": {
         "ci": {
