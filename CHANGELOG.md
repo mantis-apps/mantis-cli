@@ -1,5 +1,12 @@
 # Changelog
 
+# [0.9.0](https://github.com/mantis-apps/mantis-cli/compare/0.8.1...0.9.0) (2024-06-21)
+
+
+### Features
+
+* **templates:** support vite for mobile-client ([9795bd9](https://github.com/mantis-apps/mantis-cli/commit/9795bd92167a75aff75783b54c93ef6cfd4ee339))
+
 ## [0.8.1](https://github.com/mantis-apps/mantis-cli/compare/0.8.0...0.8.1) (2024-05-16)
 
 
