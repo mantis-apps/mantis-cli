@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.2](https://github.com/mantis-apps/mantis-cli/compare/0.9.1...0.9.2) (2024-06-28)
+
+
+### Bug Fixes
+
+* storybook crashes on pnpm ([ec8ee38](https://github.com/mantis-apps/mantis-cli/commit/ec8ee38c88ad212131ebbfac34dd028453b10879))
+
 ## [0.9.1](https://github.com/mantis-apps/mantis-cli/compare/0.9.0...0.9.1) (2024-06-21)
 
 
