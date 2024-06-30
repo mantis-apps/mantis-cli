@@ -9,8 +9,8 @@ import InitAction from '../actions/init/init.actions';
 export default new Command('init')
   .description('Create a basic mantis app')
   .option('-m, --mongodb-uri <mongodb-uri>', 'The MongoDB URI')
-  .option('-n, --name <name>', 'The name of the workspace')
-  .option('-cm, --create-mobile <create-mobile>', 'Create mobile app', true)
+  .option('-n, --workspace-name <workspace-name>', 'The name of the workspace')
+  .option('-cm, --create-mobile <create-mobile>', 'Create mobile app')
   .action(async (params) => {
     await new InitAction(params).execute();
   });

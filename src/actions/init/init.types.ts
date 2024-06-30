@@ -1,5 +1,5 @@
 export type InitActionOptions = {
-  name: string;
+  workspaceName: string;
   mongodbUri: string;
-  createMobile: 'true' | 'false';
+  createMobile: boolean;
 };

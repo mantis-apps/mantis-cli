@@ -2,6 +2,7 @@ import { checkNodeVersion } from '../../utils/utilities.helper';
 import { Action } from '../abstract.action';
 import { InitActionOptions } from './init.types';
 import { MongoClient } from 'mongodb';
+import { PackageManager, PackageManagerName, installDependencies } from 'nypm';
 
 import fsExtra from 'fs-extra';
 import { $, execaCommand } from 'execa';
@@ -12,6 +13,8 @@ import path from 'path';
 import { changeDirectory } from '../../utils/files.helper';
 import { printWithMantisGradient } from '../../utils/prettyPrint.helper';
 
+type PMTypePromptResult = Pick<PackageManager, 'name'>;
+
 export default class InitAction extends Action {
   private options: InitActionOptions;
 
@@ -20,23 +23,33 @@ export default class InitAction extends Action {
     this.options = options;
   }
 
-  validateParams() {
-    const params = this.options;
-    if (
-      params.createMobile &&
-      !['true', 'false'].includes(params.createMobile)
-    ) {
-      throw new Error(
-        "Invalid value for --createMobile. Expected 'true' or 'false'",
-      );
-    }
-  }
+  promptForPackageManagerSelect = async (): Promise<PMTypePromptResult> => {
+    const temp = await inquirer.prompt<PMTypePromptResult>({
+      type: 'list',
+      name: 'name' satisfies keyof PMTypePromptResult,
+      message: "Select the package manager you'd like to use:",
+      choices: ['npm', 'bun', 'pnpm', 'yarn'] satisfies PackageManagerName[],
+    });
+    return temp;
+  };
+
+  installDependenciesWithMessage = async (workspacePath: string) => {
+    const pm = await this.promptForPackageManagerSelect();
+    const spinner = ora('Installing dependencies').start();
+    await installDependencies({
+      packageManager: pm.name,
+      cwd: workspacePath,
+      silent: true,
+    });
+    spinner.succeed('Installed dependencies');
+    return pm;
+  };
 
   async promptForMissingValues() {
-    const { mongodbUri, name } = this.options;
     type PromptResult = {
       workspaceName: string;
       mongoUrl: string;
+      createMobile: boolean;
     };
     const answers = await inquirer.prompt<PromptResult>([
       {
@@ -44,7 +57,7 @@ export default class InitAction extends Action {
         name: 'workspaceName',
         message: 'Enter the name of the workspace to create:',
         default: 'mantis',
-        when: () => !name,
+        when: () => !this.options.workspaceName,
         validate: async (value) => {
           if (value.trim().length <= 0)
             return 'Workspace name must not be empty';
@@ -61,7 +74,7 @@ export default class InitAction extends Action {
         message:
           "Enter the MongoDB URI (default is 'mongodb://localhost:27017/mantis'):",
         default: 'mongodb://localhost:27017/mantis',
-        when: () => !mongodbUri,
+        when: () => !this.options.mongodbUri,
         validate: async (value) => {
           if (value.trim().length <= 0) return 'Db url must not be empty';
           try {
@@ -72,11 +85,20 @@ export default class InitAction extends Action {
           }
         },
       },
+      {
+        type: 'confirm',
+        name: 'createMobile',
+        message: 'Create mobile app?',
+        when: () => ![true, false].includes(this.options.createMobile),
+      },
     ]);
 
     return {
-      workspaceName: answers.workspaceName || name,
-      mongoUrl: answers.mongoUrl || mongodbUri,
+      workspaceName: answers.workspaceName || this.options.workspaceName,
+      mongoUrl: answers.mongoUrl || this.options.mongodbUri,
+      createMobile: [true, false].includes(answers.createMobile)
+        ? answers.createMobile
+        : this.options.createMobile,
     };
   }
 
@@ -112,7 +134,7 @@ export default class InitAction extends Action {
     workspacePath: string;
     createMobile: boolean;
   }) {
-    const { workspaceName, workspacePath, createMobile } = params;
+    const { workspaceName, workspacePath } = params;
     const spinner = ora('Setting up project template...').start();
     try {
       await $`git clone --no-checkout https://github.com/mantis-apps/mantis-templates.git`;
@@ -122,7 +144,7 @@ export default class InitAction extends Action {
       await $`git checkout`;
 
       await $`mv todo/app-web ${workspacePath}/app-web`;
-      if (createMobile) {
+      if (params.createMobile) {
         await $`mv todo/app-mobile ${workspacePath}/app-mobile`;
       }
       await $`mv todo/shared-ui ${workspacePath}/shared-ui`;
@@ -130,7 +152,7 @@ export default class InitAction extends Action {
       await $`mv todo/jest.config.ts ${workspacePath}/jest.config.ts`;
       await $`mv todo/jest.preset.js ${workspacePath}/jest.preset.js`;
       await $`mv todo/package.json ${workspacePath}/package.json`;
-      await $`mv todo/package-lock.json ${workspacePath}/package-lock.json`;
+      // await $`mv todo/package-lock.json ${workspacePath}/package-lock.json`;
       await $`mv todo/nx.json ${workspacePath}/nx.json`;
 
       changeDirectory(workspacePath);
@@ -143,27 +165,13 @@ export default class InitAction extends Action {
     }
   }
 
-  async installDependencies(workspacePath: string) {
-    const spinner = ora('Installing dependencies...').start();
-    try {
-      changeDirectory(workspacePath);
-      await $`npm install`;
-      spinner.succeed('Dependencies installed');
-    } catch (error) {
-      spinner.fail('Dependencies installation failed');
-      this.logger.error(error);
-      this.logger.warning(
-        'Please retry package installation inside the workspace. If the issue persists, please contact support.',
-      );
-    }
-  }
-
   async execute() {
     try {
       printWithMantisGradient(`🛖   WORKSPACE CREATION   🛠️`);
       await checkNodeVersion();
-      this.validateParams();
-      const { workspaceName, mongoUrl } = await this.promptForMissingValues();
+      const { workspaceName, mongoUrl, createMobile } =
+        await this.promptForMissingValues();
+
       const workspacePath = path.join(process.cwd(), workspaceName);
       this.logger.info('Node version is valid');
       await this.createWorkspace(workspaceName);
@@ -179,11 +187,11 @@ export default class InitAction extends Action {
       await this.cloneAndSetupTemplate({
         workspaceName,
         workspacePath,
-        createMobile: this.options.createMobile === 'true',
+        createMobile,
       });
 
       // install dependencies
-      await this.installDependencies(workspacePath);
+      const pm = await this.installDependenciesWithMessage(workspacePath);
 
       // add mantis json
       const mantisJsonPath = path.join(workspacePath, 'mantis.json');
@@ -191,7 +199,8 @@ export default class InitAction extends Action {
         "name": "${workspaceName}",
         "version": "0.0.1",
         "description": "Mantis Workspace",
-        "workspace": ["@${workspaceName}/source"]
+        "workspace": ["@${workspaceName}/source"],
+        "packageManager": "${pm.name}"
       }`;
       fs.writeFileSync(mantisJsonPath, mantisJsonContent);
       fs.writeFileSync(mantisJsonPath, mantisJsonContent);
