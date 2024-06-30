@@ -19,6 +19,7 @@ export const verifyMantisProject = () => {
     version: Joi.string().required(),
     workspace: Joi.array().items(Joi.string()).required(),
     description: Joi.string().optional(),
+    packageManager: Joi.string().required(),
   });
   const result = mantisJsonSchema.validate(mantisJson);
   if (result.error) {
